@@ -1,0 +1,5 @@
+https://en.wikipedia.org/wiki/Wavelet_Tree
+http://alexbowe.com/wavelet-trees/
+https://www.dcc.uchile.cl/~gnavarro/ps/cpm12.pdf
+http://alexbowe.com/rrr/
+https://github.com/Vaan5/Bioinformatics-Construction-of-binary-wavelet-trees-using-RRR-structure
