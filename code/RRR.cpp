@@ -2,26 +2,28 @@
 using namespace std;
 
 class RRR {
-  // superblokovi su 0-indeksirani
-  // blokovi su 0-indeksirani
   private:
-    int b; // velicina bloka
-    int f; // broj blokova u superbloku
-    int sumsb[n/(b*f)]; // suma jedinica do i-tog superbloka, ukljucivo
-    int c[n/b]; // klasa za svaki blok
-    int o[n/b]; // offset za svaki blok
-    int cum[c,o][pos]; // kumulativna suma bloka indeksiranog s c, o; 0-indeksirano
+    // NB: b should be less than 32 with current implementation
+    // NB: superblock and block positions are 0-indexed
+    int b; // block size
+    int f; // number of blocks in superblock
+    int numBlocks; // number of blocks
+    int numSuperblocks; // number of superblocks
 
-    int nb = (n-1)/b+1; // broj blokova
-    int nsb = (n-1)/(b*f)+1; // broj superblokova
-    
-    // vraca zadnji superblok u kojem se nalazi i-ta jedinica
-    int sb_search(int i) {
+    vector<int> superblockCumSum; // cumulative sum of ones to i-th superblock, inclusive, size ~ (n/(b*f))
+    vector<int> blockClass; // block class, ie. number of ones in block, size ~ (n/b)
+    vector<int> blockOffset; // block offset in class, size ~ (n/b)
+    // cumulative sum of ones to i-th position in block indexed with (class,offset), 0-indexed
+    // size ~ (b*2^b)
+    vector<vector<vector<int>>> cumSumInBlock;
+
+    // finds index of superblock containing i-th one
+    int findSuperblockByOne(int i) {
       int lo = 0;
-      int hi = nsb; 
+      int hi = numSuperblocks;
       while(lo < hi) {
         int mid = (lo+hi)/2;
-        if (sumsb[mid] < i) {
+        if (superblockCumSum[mid] < i) {
           lo = mid+1;
         } else {
           hi = mid;
@@ -30,65 +32,154 @@ class RRR {
       return lo;
     }
 
-  public:
-    RRR(vector<bool> bits, int _b, int _f): b(_b), f(_f) {
-
+    int getIndBlock(int ind) {
+      return ind/b;
     }
 
-    // broj nula do pozicije i (0-indeksiran), ukljucivo 
+    int getIndSuperblock(int ind) {
+      return indBlock/(b*f);
+    }
+
+    int getCumSumToSuperblock(int indSuperblock) {
+      return (indSuperblock < 0) ? 0 : superblockCumSum[indSuperblock];
+    }
+
+    bool isBlockStart(int ind) {
+      return getIndBlock(ind) != getIndBlock(ind-1);
+    }
+
+    // TODO: check this
+    int nChoosek(int n, int k) {
+      if (k > n) return 0;
+      if (k*2 > n) k = n-k;
+      if (k == 0) return 1;
+
+      int res = n;
+      for (int i = 2; i <= k; ++i) {
+        res *= (n-i+1);
+        res /= i;
+      }
+      return res;
+    }
+
+  public:
+    // time-complexity - O(b*2^b) for preprocessing
+    RRR(vector<bool> bits, int _b, int _f): b(_b), f(_f) {
+      // preprocessing - O(b*2^b) time and memory
+      vector<int> blockValToOffset;
+      blockValToOffset.resize(1<<b);
+      vector<int> indInClass; // index in class
+      indInClass.resize(b+1, 0); // b+1 different classes in total (0 ones, .., b ones)
+      cumSumInBlock.resize(b);
+      for (int i = 0; i < (1<<b); ++i) {
+        int classType = __builtin_popcount(i);
+        blockValToOffset[i] = indInClass[classType];
+        ++indInClass[classType];
+
+        // calculate cumSumInBlock
+        cumSumInBlock[classType].resize(nChoosek(b, classType)); // TODO: check what multiple resizing does
+        cumSumInBlock[classType][blockValToOffset[i]].resize(b);
+        int cumsum = 0;
+        for (int j = 0; j < b; ++j) {
+          cumsum += !!(i&(1<<j));
+          cumSumInBlock[classType][blockValToOffset[i]][j] = cumsum;
+        }
+      }
+      // preprocessing finished
+
+      int n = bits.size();
+      numBlocks = (n-1)/b+1;
+      numSuperblocks = (n-1)/(b*f)+1;
+      blockClass.resize(numBlocks, 0);
+      blockOffset.resize(numBlocks);
+      superblockCumSum.resize(numSuperblocks);
+
+      int cumsum = 0;
+      int blockVal = 0;
+      for (int i = 0; i < n; ++i) {
+        if (isBlockStart(i)) {
+          blockVal = 0; // when new block starts reset block value to zero
+        }
+        // update block class and offset
+        indBlock = getIndBlock(i);
+        blockVal = (blockVal*2) + bits[i]; // NB: currently limits b to 32
+        blockOffset[indBlock] = blockValToOffset[blockVal];
+        blockClass[indBlock] += bits[i];
+
+        // update superblockCumSum
+        cumsum += bits[i];
+        superblockCumSum[getIndSuperBlock(i)] = cumsum;
+      }
+    }
+
+    // number of zeros to position i, inclusive
+    // time-complexity - same as rank1()
     int rank0(int i) {
+      // calculate using number of ones
       return i+1-rank1(i);
     }
 
-    // broj jedinica do pozicije i (0-indeksiran), ukljucivo 
-    int rank1(int i) {
-      int ib = i/b; // indeks bloka te pozicije
-      int is = ib/f; // indeks superbloka te pozicije
+    // number of ones to position i, inclusive
+    // time-complexity - O(f)
+    // TODO: convert to O(1), hint: remove looping through each block in superblock and
+    // use cumulative sum of blocks in superblock instead
+    int rank1(int ind) {
+      int indBlock = getIndBlock(ind); // block index
+      int indSuperblock = getIndSuperblock(ind); // superblock index
 
-      int result = (is > 0) ? sumsb[is-1] : 0; // suma jedinica do is-tog superbloka
-       
-      // prodji po svim blokovima od pocetka ovog superbloka do trenutnog bloka
-      for (int i = is*f; i < ib; ++i) { 
-        result += c[i]; // dodaj broj jedinica u tom bloku
+      // cumulative sum of ones up to previous superblock
+      int counter = getCumSumToSuperblock(indSuperblock-1);
+
+      // add sum of ones in all blocks of current superblock up to previous block
+      for (int i = indSuperblock*f; i < indBlock; ++i) {
+        counter += blockClass[i];
       }
-      result += cum[c[ib], o[ib]][i-ib*b] // dodaj broj jedinica u zadnjem bloku
-      return result;
+      // add number of ones in current block up to i-th position
+      counter += cumSumInBlock[blockClass[indBlock]][blockOffset[indBlock]][i-indBlock*b]
+      return counter;
     }
 
-    // vraca poziciju i-te jedinice, 0-indeksirano
+    // index of the i-th one (0-indexed)
+    // time-complexity - O(log(n/(b*f))+f+log(b))
+    // TODO: be consistent with binary search, both implemented in separate methods or both
+    // in this method
+    // TODO: implement select0()
     int select(int i) {
-      int is = sb_search(i); // superblok u kojem se nalazi i-ta jedinica
-      int cnt = (is > 0) ? sumsb[is-1] : 0; // broj jedinica do trenutnog superbloka
+      int indSuperblock = findSuperblockByOne(i); // index of superblock containing i-th one
 
-      int ib = is*f; // trenutni blok
-      // hodaj po blokovima dok ne dostignes sumu
-      while (cnt < i) {
-        cnt += c[ib];
-        ++ib; 
+      // cumulative sum of ones up to previous superblock
+      int counter = getCumSumToSuperblock(indSuperblock-1);
+
+      int indBlock = indSuperblock*f; // current block index
+      // loop through blocks until the sum of i is reached
+      while (counter < i) {
+        counter += blockClass[indBlock];
+        ++indBlock;
       }
-      
-      // vrati se na prethodni blok
-      --ib; 
-      cnt -= c[ib];
 
-      // binary search unutar bloka
+      // return to previous block
+      --indBlock;
+      counter -= blockClass[indBlock];
+
+      // binary search in block
       int lo = 0;
       int hi = b;
-      while(lo < hi) {
+      while (lo < hi) {
         int mid = (lo+hi)/2;
-        if (cum[c[ib], o[ib]][mid]+cnt < i) {
+        if (cumSumInBlock[blockClass[indBlock]][blockOffset[indBlock]][mid]+counter < i) {
           lo = mid+1;
         } else {
           hi = mid;
         }
       }
 
-      return ib*b + lo;
+      return indBlock*b + lo;
     }
 
-    // vraca bit na i-toj poziciji
-    int access(int i) {
-      return (i > 0) ? rank1(i)-rank1(i-1) : rank1(i);
+    // bit on given index
+    // time-complexity - same as rank1()
+    int access(int ind) {
+      return (ind > 0) ? rank1(ind)-rank1(ind-1) : rank1(ind);
     }
 };
 
