@@ -6,12 +6,15 @@
 using namespace std;
 
 TEST (RRRTest, Rank0) {
-  vector<bool> v(5, false);
-  RRR rrr(v, 2, 5);
 }
 
 TEST (RRRTest, Rank1) { 
-	
+  vector<bool> v{false, false, false, true, false, true};
+  RRR rrr(v, 4, 5);
+  EXPECT_EQ(0, rrr.rank1(2));
+  EXPECT_EQ(1, rrr.rank1(3));
+  EXPECT_EQ(1, rrr.rank1(4));
+  EXPECT_EQ(2, rrr.rank1(5));
 }
 
 TEST (RRRTest, Select) {

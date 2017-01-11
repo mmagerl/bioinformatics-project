@@ -68,7 +68,7 @@ RRR::RRR(vector<bool> bits, int _b, int _f): b(_b), f(_f) {
     cumSumInBlock[classType][blockValToOffset[i]].resize(b);
     int cumsum = 0;
     for (int j = 0; j < b; ++j) {
-      cumsum += !!(i&(1<<j));
+      cumsum += !!(i&(1<<(b-j-1)));
       cumSumInBlock[classType][blockValToOffset[i]][j] = cumsum;
     }
   }
