@@ -15,7 +15,7 @@ class RRR {
     vector<int> blockOffset; // block offset in class, size ~ (n/b)
     // cumulative sum of ones to i-th position in block indexed with (class,offset), 0-indexed
     // size ~ (b*2^b)
-    vector<vector<vector<int>>> cumSumInBlock;
+    vector<vector<vector<int> > > cumSumInBlock;
 
     // finds index of superblock containing i-th one
     int findSuperblockByOne(int i) {
@@ -36,7 +36,7 @@ class RRR {
       return ind/b;
     }
 
-    int getIndSuperblock(int ind) {
+    int getIndSuperblock(int indBlock) {
       return indBlock/(b*f);
     }
 
@@ -101,14 +101,14 @@ class RRR {
           blockVal = 0; // when new block starts reset block value to zero
         }
         // update block class and offset
-        indBlock = getIndBlock(i);
+        int indBlock = getIndBlock(i);
         blockVal = (blockVal*2) + bits[i]; // NB: currently limits b to 32
         blockOffset[indBlock] = blockValToOffset[blockVal];
         blockClass[indBlock] += bits[i];
 
         // update superblockCumSum
         cumsum += bits[i];
-        superblockCumSum[getIndSuperBlock(i)] = cumsum;
+        superblockCumSum[getIndSuperblock(i)] = cumsum;
       }
     }
 
@@ -135,7 +135,7 @@ class RRR {
         counter += blockClass[i];
       }
       // add number of ones in current block up to i-th position
-      counter += cumSumInBlock[blockClass[indBlock]][blockOffset[indBlock]][i-indBlock*b]
+      counter += cumSumInBlock[blockClass[indBlock]][blockOffset[indBlock]][ind-indBlock*b];
       return counter;
     }
 
