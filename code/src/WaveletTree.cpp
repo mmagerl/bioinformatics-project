@@ -1,15 +1,107 @@
+#include <map>
+#include <set>
+
+#include "../include/RRR.h"
+
+using namespace std;
+
+class WaveletTreeNode {
+  private:
+    RRR* rrr;
+  public:
+    WaveletTreeNode* parent;
+    WaveletTreeNode* left;
+    WaveletTreeNode* right;
+
+    map<char, int> sigma; // mapa sa znaka na poziciju u sortiranom nizu znakova
+
+    WaveletTreeNode(WaveletTreeNode* _parent, string arr, map<char, int> _sigma, map<char, WaveletTreeNode*> charToNode): parent(_parent), sigma(_sigma) { 
+      if (sigma.size() <= 2) {
+        left = NULL;
+        right = NULL;
+        for (auto entry : sigma) {
+          charToNode[entry.first] = this;
+        }
+      } else {
+        string lArr = "";
+        string rArr = "";
+        for (auto x : arr) {
+          if (isRight(x)) {
+            rArr += x;
+          } else {
+            lArr += x;
+          }
+        }
+        map<char, int> lSigma;
+        map<char, int> rSigma;
+        for (auto entry : sigma) {
+          if (isRight(entry.first)) {
+            rSigma[entry.first] = entry.second-sigma.size()/2;
+          } else {
+            lSigma[entry.first] = entry.second;
+          }
+        }
+
+        left = new WaveletTreeNode(this, lArr, lSigma, charToNode);
+        right = new WaveletTreeNode(this, rArr, rSigma, charToNode);
+      }
+    }
+
+    // returns whether char is in right child
+    bool isRight(char c) {
+      return (sigma[c] >= sigma.size()/2);
+    }
+
+    char getCharacterInSigma(int pos) {
+        for (auto entry : sigma) {
+          if (entry.second == pos) {
+            return entry.first;
+          }
+        }
+    }
+
+    int rank0(int i)  {
+      return rrr->rank0(i);
+    }
+
+    int rank1(int i)  {
+      return rrr->rank1(i);
+    }
+
+    int select(int i) {
+      return rrr->select(i);
+    }
+
+    int access(int i) {
+      return rrr->access(i);
+    }
+};
+
 class WaveletTree {
   private:
-    WaveletTreeNode* root; // korijen stabla
-    map<char, WaveletTreeNode*> charToNode; // mapa sa znaka na cvor s tim znakom
+    WaveletTreeNode* root; // tree root
+    map<char, WaveletTreeNode*> charToNode; // maps character to tree leaf containing that character
 
   public:
-    WaveletTree(string arr): root(NULL) {}
+    WaveletTree(string arr) {
+      map<char, int> sigma;
+      set<char> chars;
+      for (auto x : arr) {
+        chars.insert(x);
+      }
+      int pos = 0;
+      for (auto x : chars) {
+        sigma[x] = pos;
+        ++pos;
+      }
 
-    // koliko puta se znak c pojavljuje do mjesta i
+      root = new WaveletTreeNode(NULL, arr, sigma, charToNode);
+    }
+
+    // number of occurrences of char c to position i (0-indexed), inclusive
     int rank(int i, char c) {
       WaveletTreeNode* cur = root;
-      int pos = i; // pozicija u trenutnom cvoru
+      int pos = i; // position in the current node
       while (cur != NULL) {
         if (cur->isRight(c)) {
           pos = cur->rank1(pos)-1;
@@ -22,75 +114,49 @@ class WaveletTree {
           break;
         }
       }
-      // u pos je pozicija u zadnjem cvoru gdje su samo znakovi c, pa je moramo uvecati za 1
+      // pos contains position in the last node containing only characters c
+      // we need to add 1 to get number of occurrences from position because it is 0-indexed
       return pos+1;
     }
 
-    // pozicija i-tog pojavljivanja znaka c
+    // index of the i-th character c
     int select(int i, char c) {
-      WaveletTreeNode* cur = charToNode[c]; // list u kojem su najvise 2 znaka, jedan od njih c
+      // start with leaf containing only two characters, one of them is c
+      WaveletTreeNode* cur = charToNode[c];
 
-      int pos; // pozicija u trenutnom cvoru
+      int pos; // position in the current node
       if (cur->isRight(c)) {
-        pos = cur->select1(i);
+        pos = cur->select(i); // TODO select1
       } else {
-        pos = cur->select0(i);
+        pos = cur->select(i); // TODO select0
       }
       while (cur != root) {
         if (cur->parent->isRight(c)) {
-          pos = cur->parent->select1(pos+1);
+          pos = cur->parent->select(pos+1); // TODO: select1
         } else {
-          pos = cur->parent->select0(pos+1);
+          pos = cur->parent->select(pos+1); // TODO: select0
         }
         cur = cur->parent;
       }
       return pos;
     }
 
-    // znak na pociziji i
-    char access(int i) {
+    // char on given index
+    char access(int ind) {
       WaveletTreeNode* cur = root;
-      int pos = i;
+      int pos = ind;
       while (cur->left != NULL) {
-        if (cur->access(pos)) { // ako je 1 idemo desno
+        if (cur->access(pos)) { // if 1 go right
           pos = cur->rank1(pos)-1;
           cur = cur->right;
-        } else { // inace lijevo
+        } else { // else go left
           pos = cur->rank0(pos)-1;
           cur = cur->left;
         }
-        return cur->sigma[cur->access(pos)];
+        return cur->getCharacterInSigma(cur->access(pos));
       }
     }
-}
-
-class WaveletTreeNode {
-  private:
-    RRR* rrr;
-  public:
-    WaveletTreeNode* parent;
-    WaveletTreeNode* left;
-    WaveletTreeNode* right;
-
-    map<char, int> sigma; // mapa sa znaka na poziciju u sortiranom nizu znakova
-
-    // vraca je li znak c u lijevom ili desnom djetetu
-    bool isRight(char c) {
-      return (sigma[c] >= sigma.size()/2);
-    }
-
-    int rank(int i)  {
-      return rrr->rank(i);
-    }
-
-    int select(int i) {
-      return rrr->select(i);
-    }
-
-    int access(int i) {
-      return rrr->access(i);
-    }
-}
+};
 
 int main(void) {
   return 0;
