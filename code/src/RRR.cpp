@@ -1,5 +1,8 @@
 #include <vector>
+#include <cstdio>
+
 #include "../include/RRR.h"
+
 using namespace std;
 
 // finds index of superblock containing i-th one
@@ -54,7 +57,7 @@ RRR::RRR(vector<bool> bits, int _b, int _f): b(_b), f(_f) {
   blockValToOffset.resize(1<<b);
   vector<int> indInClass; // index in class
   indInClass.resize(b+1, 0); // b+1 different classes in total (0 ones, .., b ones)
-  cumSumInBlock.resize(b);
+  cumSumInBlock.resize(b+1); // b+1 different classes in total
   for (int i = 0; i < (1<<b); ++i) {
     int classType = __builtin_popcount(i);
     blockValToOffset[i] = indInClass[classType];
