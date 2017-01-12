@@ -83,7 +83,7 @@ RRR::RRR(vector<bool> bits, int _b, int _f): b(_b), f(_f) {
 
   int cumsum = 0;
   int blockVal = 0;
-  for (int i = 0; i < n; ++i) {
+  for (int i = 0; i < numBlocks*b; ++i) {
     if (isBlockStart(i)) {
       blockVal = 0; // when new block starts reset block value to zero
     }
