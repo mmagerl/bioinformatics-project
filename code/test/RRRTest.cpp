@@ -5,9 +5,24 @@
 
 using namespace std;
 
+vector<bool> v1{false, false, false, true, false, true};
+vector<bool> v2{
+    false, false, true, false, true,
+    false, false, true, true, false,
+    true, false, true, true, false,
+
+    true, false, false, false, false,
+    false, true, false, false, true,
+    false, true, false, false, true,
+
+    true, false, true, true, false,
+    false, false, true, false, true,
+    true, false, true, true, false
+};
+
+
 TEST (RRRTest, Rank1) { 
-  vector<bool> v{false, false, false, true, false, true};
-  RRR rrr(v, 4, 5);
+  RRR rrr(v1, 4, 5);
   EXPECT_EQ(0, rrr.rank1(2));
   EXPECT_EQ(1, rrr.rank1(3));
   EXPECT_EQ(1, rrr.rank1(4));
@@ -15,20 +30,7 @@ TEST (RRRTest, Rank1) {
 }
 
 TEST (RRRTest, RankDeepTest){
-  vector<bool> v{
-      false, false, true, false, true,
-      false, false, true, true, false,
-      true, false, true, true, false,
-
-      true, false, false, false, false,
-      false, true, false, false, true,
-      false, true, false, false, true,
-
-      true, false, true, true, false,
-      false, false, true, false, true,
-      true, false, true, true, false
-  };
-  RRR rrr(v, 5, 3);
+  RRR rrr(v2, 5, 3);
   // S0, B0
   EXPECT_EQ(0, rrr.rank1(1));
   EXPECT_EQ(1, rrr.rank1(2));
@@ -59,20 +61,7 @@ TEST (RRRTest, RankDeepTest){
 }
 
 TEST (RRRTest, Select){
-  vector<bool> v{
-      false, false, true, false, true,
-      false, false, true, true, false,
-      true, false, true, true, false,
-
-      true, false, false, false, false,
-      false, true, false, false, true,
-      false, true, false, false, true,
-
-      true, false, true, true, false,
-      false, false, true, false, true,
-      true, false, true, true, false
-  };
-  RRR rrr(v, 5, 3);
+  RRR rrr(v2, 5, 3);
 
   // TODO Change to select1 when implemented
   EXPECT_EQ(4, rrr.select(2));
@@ -85,20 +74,7 @@ TEST (RRRTest, Select){
 }
 
 TEST (RRRTest, Access) {
-  vector<bool> v{
-      false, false, true, false, true,
-      false, false, true, true, false,
-      true, false, true, true, false,
-
-      true, false, false, false, false,
-      false, true, false, false, true,
-      false, true, false, false, true,
-
-      true, false, true, true, false,
-      false, false, true, false, true,
-      true, false, true, true, false
-  };
-  RRR rrr(v, 5, 3);
+  RRR rrr(v2, 5, 3);
 	
   EXPECT_EQ(0, rrr.access(0));
   EXPECT_EQ(0, rrr.access(5));
