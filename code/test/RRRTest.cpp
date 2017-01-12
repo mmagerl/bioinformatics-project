@@ -74,9 +74,14 @@ TEST (RRRTest, Select){
   };
   RRR rrr(v, 5, 3);
 
+  // TODO Change to select1 when implemented
   EXPECT_EQ(4, rrr.select(2));
   EXPECT_EQ(8, rrr.select(4));
   EXPECT_EQ(15, rrr.select(8));
+
+  // EXPECT_EQ(1, rrr.select0(2));
+  // EXPECT_EQ(5, rrr.select0(4));
+  // EXPECT_EQ(28, rrr.select0(18));
 }
 
 TEST (RRRTest, Access) {
