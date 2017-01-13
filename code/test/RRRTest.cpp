@@ -68,9 +68,9 @@ TEST (RRRTest, Select){
   EXPECT_EQ(8, rrr.select(4));
   EXPECT_EQ(15, rrr.select(8));
 
-  // EXPECT_EQ(1, rrr.select0(2));
-  // EXPECT_EQ(5, rrr.select0(4));
-  // EXPECT_EQ(28, rrr.select0(18));
+  EXPECT_EQ(1, rrr.select0(2));
+  EXPECT_EQ(5, rrr.select0(4));
+  EXPECT_EQ(28, rrr.select0(18));
 }
 
 TEST (RRRTest, Access) {

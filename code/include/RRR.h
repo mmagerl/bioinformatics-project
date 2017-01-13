@@ -19,9 +19,11 @@ class RRR {
 	    // size ~ (b*2^b)
 	    vector<vector<vector<int> > > cumSumInBlock;
 	    int findSuperblockByOne(int i);
+	    int findSuperblockByZero(int i);
 	    int getIndBlock(int ind);
 	    int getIndSuperblock(int indBlock);
 	    int getCumSumToSuperblock(int indSuperblock);
+	    int getZeroCumSumToSuperblock(int indSuperblock);
 	    bool isBlockStart(int ind);
 	    int nChoosek(int n, int k);
 
@@ -30,6 +32,7 @@ class RRR {
 		int rank0(int i);
 		int rank1(int ind);
 		int select(int i);
+    int select0(int i);
 		int access(int ind);
 
 };

@@ -20,6 +20,21 @@ int RRR::findSuperblockByOne(int i) {
   return lo;
 }
 
+// finds index of superblock containing i-th zero
+int RRR::findSuperblockByZero(int i){
+  int lo = 0;
+  int hi = numSuperblocks;
+  while(lo < hi){
+    int mid = (lo+hi)/2;
+    if (b*f*(mid+1) - superblockCumSum[mid] < i) {
+      lo = mid+1;
+    } else{
+      hi = mid;
+    }
+  }
+  return lo;
+}
+
 int RRR::getIndBlock(int ind) {
   return ind/b;
 }
@@ -30,6 +45,10 @@ int RRR::getIndSuperblock(int indBlock) {
 
 int RRR::getCumSumToSuperblock(int indSuperblock) {
   return (indSuperblock < 0) ? 0 : superblockCumSum[indSuperblock];
+}
+
+int RRR::getZeroCumSumToSuperblock(int indSuperblock){
+  return (indSuperblock < 0) ? 0 : b*f - superblockCumSum[indSuperblock];
 }
 
 bool RRR::isBlockStart(int ind) {
@@ -154,6 +173,38 @@ int RRR::select(int i) {
   while (lo < hi) {
     int mid = (lo+hi)/2;
     if (cumSumInBlock[blockClass[indBlock]][blockOffset[indBlock]][mid]+counter < i) {
+      lo = mid+1;
+    } else {
+      hi = mid;
+    }
+  }
+
+  return indBlock*b + lo;
+}
+
+int RRR::select0(int i) {
+  int indSuperblock = findSuperblockByZero(i); // index of superblock containing i-th one
+
+  // cumulative sum of zeros up to previous superblock
+  int counter = getZeroCumSumToSuperblock(indSuperblock-1);
+
+  int indBlock = indSuperblock*f; // current block index
+  // loop through blocks until zero count of i is reached
+  while (counter < i) {
+    counter += b - blockClass[indBlock];
+    ++indBlock;
+  }
+
+  // return to previous block
+  --indBlock;
+  counter -= b - blockClass[indBlock];
+
+  // binary search in block
+  int lo = 0;
+  int hi = b;
+  while (lo < hi) {
+    int mid = (lo+hi)/2;
+    if (mid + 1 - cumSumInBlock[blockClass[indBlock]][blockOffset[indBlock]][mid]+counter < i) {
       lo = mid+1;
     } else {
       hi = mid;
