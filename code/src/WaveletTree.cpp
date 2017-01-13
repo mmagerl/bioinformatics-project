@@ -20,12 +20,12 @@ WaveletTreeNode::WaveletTreeNode(WaveletTreeNode* _parent, string arr, map<char,
       lArr += x;
     }
   }
+  rrr = new RRR(bits);
 
   if (sigma.size() <= 2) {
     for (auto entry : sigma) {
       charToNode[entry.first] = this;
     }
-    rrr = new RRR(bits, 2, 5);
     left = right = NULL;
   } else {
     map<char, int> lSigma;
@@ -38,7 +38,6 @@ WaveletTreeNode::WaveletTreeNode(WaveletTreeNode* _parent, string arr, map<char,
       }
     }
 
-    rrr = new RRR(bits, 2, 5);
     left = new WaveletTreeNode(this, lArr, lSigma, charToNode);
     right = new WaveletTreeNode(this, rArr, rSigma, charToNode);
   }

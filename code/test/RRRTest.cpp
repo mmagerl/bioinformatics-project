@@ -22,7 +22,7 @@ vector<bool> v2{
 
 
 TEST (RRRTest, Rank1) { 
-  RRR rrr(v1, 4, 5);
+  RRR rrr(v1);
   EXPECT_EQ(0, rrr.rank1(2));
   EXPECT_EQ(1, rrr.rank1(3));
   EXPECT_EQ(1, rrr.rank1(4));
@@ -61,7 +61,7 @@ TEST (RRRTest, Rank1EmptyConstructor) {
 }
 
 TEST (RRRTest, RankDeepTest){
-  RRR rrr(v2, 5, 3);
+  RRR rrr(v2);
   // S0, B0
   EXPECT_EQ(0, rrr.rank1(1));
   EXPECT_EQ(1, rrr.rank1(2));
@@ -92,7 +92,7 @@ TEST (RRRTest, RankDeepTest){
 }
 
 TEST (RRRTest, Select){
-  RRR rrr(v2, 5, 3);
+  RRR rrr(v2);
 
   // TODO Change to select1 when implemented
   EXPECT_EQ(4, rrr.select1(2));
@@ -105,7 +105,7 @@ TEST (RRRTest, Select){
 }
 
 TEST (RRRTest, Access) {
-  RRR rrr(v2, 5, 3);
+  RRR rrr(v2);
 	
   EXPECT_EQ(0, rrr.access(0));
   EXPECT_EQ(0, rrr.access(5));

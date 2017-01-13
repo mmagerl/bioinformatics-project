@@ -28,7 +28,6 @@ class RRR {
     int nChoosek(int n, int k);
 
 	public:
-		RRR(std::vector<bool> bits, int _b, int _f);
     RRR(std::vector<bool> bits);
 		int rank0(int i);
 		int rank1(int ind);

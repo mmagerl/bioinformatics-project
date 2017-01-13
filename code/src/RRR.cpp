@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <vector>
 #include <cmath>
 #include <cstdio>
@@ -56,7 +57,6 @@ bool RRR::isBlockStart(int ind) {
   return getIndBlock(ind) != getIndBlock(ind-1);
 }
 
-// TODO: check this
 int RRR::nChoosek(int n, int k) {
   if (k > n) return 0;
   if (k*2 > n) k = n-k;
@@ -71,7 +71,10 @@ int RRR::nChoosek(int n, int k) {
 }
 
 // time-complexity - O(b*2^b) for preprocessing
-RRR::RRR(vector<bool> bits, int _b, int _f): b(_b), f(_f) {
+RRR::RRR(vector<bool> bits) {
+  b = max((int)(log2(bits.size()) / 2), 1);
+  f = max((int)pow(log2(bits.size()), 2), 1);
+
   // preprocessing - O(b*2^b) time and memory
   vector<int> blockValToOffset;
   blockValToOffset.resize(1<<b);
@@ -118,8 +121,6 @@ RRR::RRR(vector<bool> bits, int _b, int _f): b(_b), f(_f) {
     superblockCumSum[getIndSuperblock(i)] = cumsum;
   }
 }
-
-RRR::RRR(vector<bool> bits) : RRR::RRR(bits, (int)(log2(bits.size()) / 2), (int)pow(log2(bits.size()), 2)) {}
 
 // number of zeros to position i, inclusive
 // time-complexity - same as rank1()
