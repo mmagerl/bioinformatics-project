@@ -31,7 +31,7 @@ class RRR {
 		RRR(std::vector<bool> bits, int _b, int _f);
 		int rank0(int i);
 		int rank1(int ind);
-		int select(int i);
+		int select1(int i);
     int select0(int i);
 		int access(int ind);
 

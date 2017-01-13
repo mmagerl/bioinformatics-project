@@ -58,8 +58,12 @@ int WaveletTreeNode::rank1(int i)  {
   return rrr->rank1(i);
 }
 
-int WaveletTreeNode::select(int i) {
-  return rrr->select(i);
+int WaveletTreeNode::select1(int i) {
+  return rrr->select1(i);
+}
+
+int WaveletTreeNode::select0(int i) {
+  return rrr->select0(i);
 }
 
 int WaveletTreeNode::access(int i) {
@@ -110,15 +114,15 @@ int WaveletTree::select(int i, char c) {
 
   int pos; // position in the current node
   if (cur->isRight(c)) {
-    pos = cur->select(i); // TODO select1
+    pos = cur->select1(i);
   } else {
-    pos = cur->select(i); // TODO select0
+    pos = cur->select0(i);
   }
   while (cur != root) {
     if (cur->parent->isRight(c)) {
-      pos = cur->parent->select(pos+1); // TODO: select1
+      pos = cur->parent->select1(pos+1);
     } else {
-      pos = cur->parent->select(pos+1); // TODO: select0
+      pos = cur->parent->select0(pos+1);
     }
     cur = cur->parent;
   }

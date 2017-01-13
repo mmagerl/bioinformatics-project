@@ -149,8 +149,7 @@ int RRR::rank1(int ind) {
 // time-complexity - O(log(n/(b*f))+f+log(b))
 // TODO: be consistent with binary search, both implemented in separate methods or both
 // in this method
-// TODO: implement select0()
-int RRR::select(int i) {
+int RRR::select1(int i) {
   int indSuperblock = findSuperblockByOne(i); // index of superblock containing i-th one
 
   // cumulative sum of ones up to previous superblock

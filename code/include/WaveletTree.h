@@ -21,7 +21,8 @@ class WaveletTreeNode {
 	    char getCharacterInSigma(int pos);
 	    int rank0(int i);
 	    int rank1(int i);
-	    int select(int i);
+	    int select0(int i);
+	    int select1(int i);
 	    int access(int i);
 };
 
