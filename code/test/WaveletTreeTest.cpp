@@ -18,7 +18,7 @@ TEST (WaveletTreeTest, Rank) {
 	EXPECT_EQ(1, waveletTree.rank(10,'t'));
 }
 
-TEST (WaveletTreeTest, Select){
+TEST (WaveletTreeTest, Select) {
 	EXPECT_EQ(0, waveletTree.select(1, 'B'));
 	EXPECT_EQ(1, waveletTree.select(1, 'i'));
 	EXPECT_EQ(10, waveletTree.select(1, 't'));
