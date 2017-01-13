@@ -1,27 +1,33 @@
 #include <map>
 #include <set>
+#include <vector>
+#include <cstdio>
 
 #include "../include/WaveletTree.h"
 
 using namespace std;
 
-WaveletTreeNode::WaveletTreeNode(WaveletTreeNode* _parent, string arr, map<char, int> _sigma, map<char, WaveletTreeNode*> charToNode): parent(_parent), sigma(_sigma) {
+WaveletTreeNode::WaveletTreeNode(WaveletTreeNode* _parent, string arr, map<char, int> _sigma, map<char, WaveletTreeNode*>& charToNode): parent(_parent), sigma(_sigma) {
+  string lArr = "";
+  string rArr = "";
+  vector<bool> bits;
+  for (auto x : arr) {
+    auto isRightChild = isRight(x);
+    bits.push_back(isRightChild);
+    if (isRightChild) {
+      rArr += x;
+    } else {
+      lArr += x;
+    }
+  }
+
   if (sigma.size() <= 2) {
-    left = NULL;
-    right = NULL;
     for (auto entry : sigma) {
       charToNode[entry.first] = this;
     }
+    rrr = new RRR(bits, 2, 5);
+    left = right = NULL;
   } else {
-    string lArr = "";
-    string rArr = "";
-    for (auto x : arr) {
-      if (isRight(x)) {
-        rArr += x;
-      } else {
-        lArr += x;
-      }
-    }
     map<char, int> lSigma;
     map<char, int> rSigma;
     for (auto entry : sigma) {
@@ -32,6 +38,7 @@ WaveletTreeNode::WaveletTreeNode(WaveletTreeNode* _parent, string arr, map<char,
       }
     }
 
+    rrr = new RRR(bits, 2, 5);
     left = new WaveletTreeNode(this, lArr, lSigma, charToNode);
     right = new WaveletTreeNode(this, rArr, rSigma, charToNode);
   }
@@ -112,6 +119,11 @@ int WaveletTree::select(int i, char c) {
   // start with leaf containing only two characters, one of them is c
   WaveletTreeNode* cur = charToNode[c];
 
+  // if char does not exist, return -1
+  if (cur == NULL) {
+    return -1;
+  }
+
   int pos; // position in the current node
   if (cur->isRight(c)) {
     pos = cur->select1(i);
@@ -141,7 +153,7 @@ char WaveletTree::access(int ind) {
       pos = cur->rank0(pos)-1;
       cur = cur->left;
     }
-    return cur->getCharacterInSigma(cur->access(pos));
   }
+  return cur->getCharacterInSigma(cur->access(pos));
 }
 

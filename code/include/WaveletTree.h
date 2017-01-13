@@ -16,7 +16,7 @@ class WaveletTreeNode {
 	    WaveletTreeNode* right;
 	    map<char, int> sigma; // mapa sa znaka na poziciju u sortiranom nizu znakova
 
-	    WaveletTreeNode(WaveletTreeNode* _parent, string arr, map<char, int> _sigma, map<char, WaveletTreeNode*> charToNode);
+	    WaveletTreeNode(WaveletTreeNode* _parent, string arr, map<char, int> _sigma, map<char, WaveletTreeNode*>& charToNode);
 	    bool isRight(char c);
 	    char getCharacterInSigma(int pos);
 	    int rank0(int i);
