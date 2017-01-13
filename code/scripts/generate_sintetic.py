@@ -2,6 +2,15 @@
 import sys
 import random
 
+def generate(number_of_characters, ascii_lower, ascii_upper, output_file_name):
+	with open(output_file_name, "w") as output_file:
+		characters = []
+		for i in range(number_of_characters):
+			characters.append(chr(random.randint(ascii_lower, ascii_upper)))
+
+		output_file.write("".join(characters))
+		print("Generated file: %s" % (output_file_name))
+
 def main():
 	if len(sys.argv) != 5:
 		print("%s: Invalid number of arguments" % (sys.argv[0]))
@@ -17,13 +26,8 @@ def main():
 	ascii_lower = int(sys.argv[2])
 	ascii_upper = int(sys.argv[3])
 	output_file = sys.argv[4]
+	generate(number_of_characters, ascii_lower, ascii_upper, output_file)
 
-	with open(output_file, "w") as output_file:
-		characters = []
-		for i in range(number_of_characters):
-			characters.append(chr(random.randint(ascii_lower, ascii_upper)))
-
-		output_file.write("".join(characters))
 
 if __name__ == "__main__":
     main()
