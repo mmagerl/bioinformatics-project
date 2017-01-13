@@ -4,7 +4,6 @@
 using namespace std;
 
 Brute::Brute(string _arr): arr(_arr) {
-  cout << arr << endl;
 }
   
 int Brute::rank(int i, char c){
