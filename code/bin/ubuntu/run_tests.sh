@@ -4,7 +4,7 @@ run_test() {
 	test_file=$1
 	file_name=$(basename $test_file)
 	test_name="${file_name%.*}"
-	include_src="../../src/RRR.cpp ../../src/WaveletTree.cpp"
+	include_src="../../src/RRR.cpp ../../src/WaveletTree.cpp ../../src/Brute.cpp"
 	printf "\nRunning test file: $file_name\n"
 	g++ -std=gnu++11 -isystem ../../include -pthread $test_file $include_src libgtest.a -o $test_name.out && ./$test_name.out
 }
