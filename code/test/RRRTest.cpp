@@ -29,6 +29,37 @@ TEST (RRRTest, Rank1) {
   EXPECT_EQ(2, rrr.rank1(5));
 }
 
+TEST (RRRTest, Rank1EmptyConstructor) { 
+  RRR rrr(v2);
+  // S0, B0
+  EXPECT_EQ(0, rrr.rank1(1));
+  EXPECT_EQ(1, rrr.rank1(2));
+  EXPECT_EQ(2, rrr.rank0(1));
+  EXPECT_EQ(2, rrr.rank0(2));
+
+  // S0, B1
+  EXPECT_EQ(2, rrr.rank1(6));
+  EXPECT_EQ(3, rrr.rank1(7));
+  EXPECT_EQ(4, rrr.rank0(5));
+  EXPECT_EQ(5, rrr.rank0(6));
+  EXPECT_EQ(5, rrr.rank0(7));
+
+  // S1, B0, B1
+  EXPECT_EQ(8, rrr.rank1(15));
+  EXPECT_EQ(9, rrr.rank1(21));
+
+  EXPECT_EQ(11, rrr.rank0(18));
+  EXPECT_EQ(15, rrr.rank0(23));
+
+  // S2, B0, B2
+  EXPECT_EQ(13, rrr.rank1(30));
+  EXPECT_EQ(15, rrr.rank1(34));
+  EXPECT_EQ(20, rrr.rank1(44));
+  EXPECT_EQ(18, rrr.rank0(30));
+  EXPECT_EQ(20, rrr.rank0(34));
+  EXPECT_EQ(25, rrr.rank0(44));
+}
+
 TEST (RRRTest, RankDeepTest){
   RRR rrr(v2, 5, 3);
   // S0, B0

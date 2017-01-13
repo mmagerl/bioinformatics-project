@@ -1,4 +1,5 @@
 #include <vector>
+#include <cmath>
 #include <cstdio>
 
 #include "../include/RRR.h"
@@ -117,6 +118,8 @@ RRR::RRR(vector<bool> bits, int _b, int _f): b(_b), f(_f) {
     superblockCumSum[getIndSuperblock(i)] = cumsum;
   }
 }
+
+RRR::RRR(vector<bool> bits) : RRR::RRR(bits, (int)(log2(bits.size()) / 2), (int)pow(log2(bits.size()), 2)) {}
 
 // number of zeros to position i, inclusive
 // time-complexity - same as rank1()
