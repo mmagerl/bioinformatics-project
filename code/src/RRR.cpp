@@ -7,13 +7,19 @@
 
 using namespace std;
 
-// finds index of superblock containing i-th one
-int RRR::findSuperblockByOne(int i) {
+// calculates number of ones or zeros depending on type
+int RRR::calcForType(int total, int ones, bool type) {
+  return type ? ones : total-ones;
+}
+
+// finds index of superblock containing i-th one/zero (type)
+int RRR::findSuperblock(int i, bool type) {
   int lo = 0;
   int hi = numSuperblocks;
   while(lo < hi) {
     int mid = (lo+hi)/2;
-    if (superblockCumSum[mid] < i) {
+    int cumsum = calcForType(b*f*(mid+1), superblockCumSum[mid], type);
+    if (cumsum < i) {
       lo = mid+1;
     } else {
       hi = mid;
@@ -22,15 +28,17 @@ int RRR::findSuperblockByOne(int i) {
   return lo;
 }
 
-// finds index of superblock containing i-th zero
-int RRR::findSuperblockByZero(int i){
+// finds index in indBlock containing i-th one/zero (x)
+int RRR::findIndexInBlock(int indBlock, int i, bool type) {
   int lo = 0;
-  int hi = numSuperblocks;
-  while(lo < hi){
+  int hi = b;
+  while (lo < hi) {
     int mid = (lo+hi)/2;
-    if (b*f*(mid+1) - superblockCumSum[mid] < i) {
+    int cumsum = \
+      calcForType(mid+1, cumSumInBlock[blockClass[indBlock]][blockOffset[indBlock]][mid], type);
+    if (cumsum < i) {
       lo = mid+1;
-    } else{
+    } else {
       hi = mid;
     }
   }
@@ -45,12 +53,8 @@ int RRR::getIndSuperblock(int indBlock) {
   return indBlock/(b*f);
 }
 
-int RRR::getCumSumToSuperblock(int indSuperblock) {
-  return (indSuperblock < 0) ? 0 : superblockCumSum[indSuperblock];
-}
-
-int RRR::getZeroCumSumToSuperblock(int indSuperblock){
-  return (indSuperblock < 0) ? 0 : b*f - superblockCumSum[indSuperblock];
+int RRR::getCumSumToSuperblock(int indSuperblock, bool type) {
+  return (indSuperblock < 0) ? 0 : calcForType(b*f, superblockCumSum[indSuperblock], type);
 }
 
 bool RRR::isBlockStart(int ind) {
@@ -70,6 +74,30 @@ int RRR::nChoosek(int n, int k) {
   return res;
 }
 
+int RRR::select(int i, bool type) {
+  // index of superblock containing i-th one/zero
+  int indSuperblock = findSuperblock(i, type);
+
+  // cumulative sum of ones/zeros up to previous superblock
+  int counter = getCumSumToSuperblock(indSuperblock-1, type);
+
+  int indBlock = indSuperblock*f; // current block index
+  // loop through blocks until the sum of i is reached
+  while (counter < i) {
+    counter += calcForType(b, blockClass[indBlock], type);
+    ++indBlock;
+  }
+
+  // return to previous block
+  --indBlock;
+  counter -= calcForType(b, blockClass[indBlock], type);
+
+  // index in indBlock containing (i-counter)-th one
+  int indInBlock = findIndexInBlock(indBlock, i-counter, type);
+
+  return indBlock*b + indInBlock;
+}
+
 // time-complexity - O(b*2^b) for preprocessing
 RRR::RRR(vector<bool> bits) {
   b = max((int)(log2(bits.size()) / 2), 1);
@@ -87,7 +115,7 @@ RRR::RRR(vector<bool> bits) {
     ++indInClass[classType];
 
     // calculate cumSumInBlock
-    cumSumInBlock[classType].resize(nChoosek(b, classType)); // TODO: check what multiple resizing does
+    cumSumInBlock[classType].resize(nChoosek(b, classType));
     cumSumInBlock[classType][blockValToOffset[i]].resize(b);
     int cumsum = 0;
     for (int j = 0; j < b; ++j) {
@@ -112,7 +140,7 @@ RRR::RRR(vector<bool> bits) {
     }
     // update block class and offset
     int indBlock = getIndBlock(i);
-    blockVal = (blockVal*2) + bits[i]; // NB: currently limits b to 32
+    blockVal = (blockVal*2) + bits[i]; // TODO: don't limit b to 32
     blockOffset[indBlock] = blockValToOffset[blockVal];
     blockClass[indBlock] += bits[i];
 
@@ -138,7 +166,7 @@ int RRR::rank1(int ind) {
   int indSuperblock = getIndSuperblock(ind); // superblock index
 
   // cumulative sum of ones up to previous superblock
-  int counter = getCumSumToSuperblock(indSuperblock-1);
+  int counter = getCumSumToSuperblock(indSuperblock-1, true);
 
   // add sum of ones in all blocks of current superblock up to previous block
   for (int i = indSuperblock*f; i < indBlock; ++i) {
@@ -149,72 +177,16 @@ int RRR::rank1(int ind) {
   return counter;
 }
 
-// index of the i-th one (0-indexed)
-// time-complexity - O(log(n/(b*f))+f+log(b))
-// TODO: be consistent with binary search, both implemented in separate methods or both
-// in this method
-int RRR::select1(int i) {
-  int indSuperblock = findSuperblockByOne(i); // index of superblock containing i-th one
-
-  // cumulative sum of ones up to previous superblock
-  int counter = getCumSumToSuperblock(indSuperblock-1);
-
-  int indBlock = indSuperblock*f; // current block index
-  // loop through blocks until the sum of i is reached
-  while (counter < i) {
-    counter += blockClass[indBlock];
-    ++indBlock;
-  }
-
-  // return to previous block
-  --indBlock;
-  counter -= blockClass[indBlock];
-
-  // binary search in block
-  int lo = 0;
-  int hi = b;
-  while (lo < hi) {
-    int mid = (lo+hi)/2;
-    if (cumSumInBlock[blockClass[indBlock]][blockOffset[indBlock]][mid]+counter < i) {
-      lo = mid+1;
-    } else {
-      hi = mid;
-    }
-  }
-
-  return indBlock*b + lo;
+// index of the i-th zero (0-indexed)
+// time-complexity - same as select1()
+int RRR::select0(int i) {
+  return select(i, false);
 }
 
-int RRR::select0(int i) {
-  int indSuperblock = findSuperblockByZero(i); // index of superblock containing i-th one
-
-  // cumulative sum of zeros up to previous superblock
-  int counter = getZeroCumSumToSuperblock(indSuperblock-1);
-
-  int indBlock = indSuperblock*f; // current block index
-  // loop through blocks until zero count of i is reached
-  while (counter < i) {
-    counter += b - blockClass[indBlock];
-    ++indBlock;
-  }
-
-  // return to previous block
-  --indBlock;
-  counter -= b - blockClass[indBlock];
-
-  // binary search in block
-  int lo = 0;
-  int hi = b;
-  while (lo < hi) {
-    int mid = (lo+hi)/2;
-    if (mid + 1 - cumSumInBlock[blockClass[indBlock]][blockOffset[indBlock]][mid]+counter < i) {
-      lo = mid+1;
-    } else {
-      hi = mid;
-    }
-  }
-
-  return indBlock*b + lo;
+// index of the i-th one (0-indexed)
+// time-complexity - O(log(n/(b*f))+f+log(b))
+int RRR::select1(int i) {
+  return select(i, true);
 }
 
 // bit on given index

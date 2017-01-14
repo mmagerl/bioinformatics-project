@@ -18,21 +18,24 @@ class RRR {
     // cumulative sum of ones to i-th position in block indexed with (class,offset), 0-indexed
     // size ~ (b*2^b)
     vector<vector<vector<int> > > cumSumInBlock;
-    int findSuperblockByOne(int i);
-    int findSuperblockByZero(int i);
+
+    int calcForType(int total, int ones, bool type);
+    int findSuperblock(int i, bool type);
+    int findIndexInBlock(int indBlock, int i, bool type);
     int getIndBlock(int ind);
     int getIndSuperblock(int indBlock);
-    int getCumSumToSuperblock(int indSuperblock);
+    int getCumSumToSuperblock(int indSuperblock, bool type);
     int getZeroCumSumToSuperblock(int indSuperblock);
     bool isBlockStart(int ind);
     int nChoosek(int n, int k);
+    int select(int i, bool type);
 
 	public:
     RRR(std::vector<bool> bits);
 		int rank0(int i);
 		int rank1(int ind);
-		int select1(int i);
     int select0(int i);
+		int select1(int i);
 		int access(int ind);
 
 };
