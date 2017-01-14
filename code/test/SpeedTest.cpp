@@ -13,18 +13,19 @@ using namespace std;
 
 const int N_QUERY = 1000000;
 
-set<char> sChars;
-vector<char> lChars;
+vector<int> positions;
+vector<char> chars;
 
-int main(int argc, char *argv[]) {
-  if (argc != 2) {
-    cout << "Expects one argument: <input-file-name>" << endl;
-    return 1;
-  }
+WaveletTree* vt;
+oWaveletTree* ovt;
+Brute* brute;
 
-  ifstream file(argv[1]);
-  string input;
-  getline(file, input);
+clock_t sTime;
+clock_t eTime;
+
+void prepare(string& input) {
+  set<char> sChars;
+  vector<char> lChars;
 
   int n = input.size();
   for (auto c : input) {
@@ -39,54 +40,75 @@ int main(int argc, char *argv[]) {
   default_random_engine eng {rd()};
   uniform_int_distribution<> dist(0, n);
 
-  vector<int> positions;
-  vector<char> chars;
   for (int i = 0; i < N_QUERY; ++i) {
     positions.push_back(dist(eng)%n);
     chars.push_back(lChars[dist(eng)%lChars.size()]);
   }
+}
 
-  clock_t begin, end;
-
-  // test tree construction
+void testConstruction(string& input) {
+  printf("construction (s)\n");
   // our solution
-  begin = clock();
-  WaveletTree vt(input);
-  end = clock();
-  cout << "WT - constructor (s): " << double(end - begin) / CLOCKS_PER_SEC << endl;
+  sTime = clock();
+  vt = new WaveletTree(input);
+  eTime = clock();
+  cout << "mWT = " << double(eTime - sTime) / CLOCKS_PER_SEC << endl;
 
   // other solution
-  begin = clock();
-  oWaveletTree ovt(input);
-  end = clock();
-  cout << "oWT - constructor (s): " << double(end - begin) / CLOCKS_PER_SEC << endl;
+  sTime = clock();
+  ovt = new oWaveletTree(input);
+  eTime = clock();
+  cout << "oWT = " << double(eTime - sTime) / CLOCKS_PER_SEC << endl;
 
-  // test rank
+  // brute solution
+  brute = new Brute(input);
+
+  cout << endl;
+}
+
+void testRank() {
+  printf("rank (us)\n");
   int rank;
   // our solution
-  begin = clock();
+  sTime = clock();
   for (int i = 0; i < N_QUERY; i++){
-    rank = vt.rank(positions[i], chars[i]);
+    rank = vt->rank(positions[i], chars[i]);
   }
-  end = clock();
-  cout << "WT - rank (us): " << double(end - begin) / CLOCKS_PER_SEC * 1000000 / N_QUERY << endl;
+  eTime = clock();
+  cout << "mWT = " << double(eTime - sTime) / CLOCKS_PER_SEC * 1000000 / N_QUERY << endl;
 
   // other solution
-  begin = clock();
+  sTime = clock();
   for (int i = 0; i < N_QUERY; i++){
-    rank = ovt.rank(positions[i], chars[i]);
+    rank = ovt->rank(positions[i], chars[i]);
   }
-  end = clock();
-  cout << "oWT - rank (us): " << double(end - begin) / CLOCKS_PER_SEC * 1000000 / N_QUERY << endl;
+  eTime = clock();
+  cout << "oWT = " << double(eTime - sTime) / CLOCKS_PER_SEC * 1000000 / N_QUERY << endl;
 
-  // brute force solution
-  Brute brute(input);
-  begin = clock();
+  // brute solution
+  sTime = clock();
   for (int i = 0; i < 1000; i++){
-    rank = brute.rank(positions[i], chars[i]);
+    rank = brute->rank(positions[i], chars[i]);
   }
-  end = clock();
-  cout << "BR - rank (us): " << double(end - begin) / CLOCKS_PER_SEC * 1000 << endl;
+  eTime = clock();
+  cout << "BRT = " << double(eTime - sTime) / CLOCKS_PER_SEC * 1000 << endl;
+
+  cout << endl;
+}
+
+int main(int argc, char *argv[]) {
+  if (argc != 2) {
+    cout << "Expects one argument: <input-file-name>" << endl;
+    return 1;
+  }
+
+  ifstream file(argv[1]);
+  string input;
+  getline(file, input);
+
+  prepare(input);
+  testConstruction(input);
+  testRank();
 
   return 0;
 }
