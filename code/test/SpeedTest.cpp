@@ -8,32 +8,36 @@
 
 using namespace std;
 
-int main(){
-  ifstream file("../datasets/output.txt");
+int main(int argc, char *argv[]) {
+  if (argc != 2) {
+    cout << "Expects one argument: <input-file-name>" << endl;
+    return 1;
+  }
+
+  ifstream file(argv[1]);
   string input;
   getline(file, input);
-
 
   clock_t begin = clock();
   WaveletTree vt(input);
   clock_t end = clock();
-  cout << "konstruktor: " << double(end - begin) / CLOCKS_PER_SEC << endl;
+  cout << "WT - constructor (s): " << double(end - begin) / CLOCKS_PER_SEC << endl;
 
   int rank;
   begin = clock();
   for (int i = 0; i < 1000000; i++){
-    rank = vt.rank(50000, 'F');
+    rank = vt.rank(0, 'A');
   }
   end = clock();
-  cout << "WT: 1000000 rank operacija: " << double(end - begin) / CLOCKS_PER_SEC << endl;
+  cout << "WT - rank (us): " << double(end - begin) / CLOCKS_PER_SEC << endl;
 
   Brute brute(input);
   begin = clock();
   for (int i = 0; i < 1000; i++){
-    rank = brute.rank(50000, 'F');
+    rank = brute.rank(0, 'A');
   }
   end = clock();
-  cout << "Brute: 1000 rank operacija: " << double(end - begin) / CLOCKS_PER_SEC << endl;
+  cout << "BR - rank (us): " << double(end - begin) / CLOCKS_PER_SEC * 1000 << endl;
 
   return 0;
 }
