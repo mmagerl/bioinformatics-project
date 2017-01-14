@@ -1,0 +1,3 @@
+Folder contains sintetic datasets named "in-<x>-<y>.txt". 
+Each file contains string with 10^x characters and y different letters.
+
