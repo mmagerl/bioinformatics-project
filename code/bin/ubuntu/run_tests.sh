@@ -6,10 +6,10 @@ run_test() {
 	test_name="${file_name%.*}"
 	include_src="../../src/RRR.cpp ../../src/WaveletTree.cpp ../../test/Brute.cpp"
 	printf "\nRunning test file: $file_name\n"
-	g++ -std=gnu++11 -isystem ../../include -pthread $test_file $include_src libgtest.a -o $test_name.out && ./$test_name.out
+	g++ -std=gnu++11 -isystem ../../include -pthread $test_file $include_src libgtest.a -o ../../build/$test_name.out && ../../build/$test_name.out
 }
 
-
+mkdir -p ../../build/
 if [ $# -eq 0 ]; then
 	for test_file in $(find ../../unittest/ -name "*.cpp"); do run_test $test_file; done
 else
