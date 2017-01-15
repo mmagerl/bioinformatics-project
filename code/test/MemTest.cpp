@@ -53,38 +53,22 @@ string generateFilename(int m, int s){
 }
 
 int main(int argc, char *argv[]) {
-  vector<int> mem{7};
-  vector<int> sigma{28};
-  bool our_impl = true;
-
   double begin, end;
   string input;
 
-  if (our_impl){
-    cout << "Naša";
-  } else{
-    cout << "Njihova";
-  }
-  cout << " implementacija: " << endl;
-  for (auto m : mem){
-    cout << "====================" << endl;
-    cout << "Size: 10^" << m << endl;
-    cout << "====================" << endl;
-    for (auto s : sigma){
-      cout << "Alphabet size: " << s << endl;
-      ifstream file(generateFilename(m, s));
-      getline(file, input);
+  ifstream file(argv[1]);
+  getline(file, input);
 
-      begin = getMemoryUsage(0);
-      if (our_impl){
-        WaveletTree vt(input);
-      } else{
-        oWaveletTree ovt(input);
-      }
-      end = getMemoryUsage(begin);
-      cout << "getMemoryUsage(): " << end - begin << "MB" << endl;
-      cout << endl;
-    }
+  if (strcmp(argv[2], "m") == 0) {
+    begin = getMemoryUsage(0);
+    WaveletTree vt(input);
+    end = getMemoryUsage(begin);
+    cout << "mWT = " << end - begin << "MB" << endl;
+  } else {
+    begin = getMemoryUsage(0);
+    oWaveletTree ovt(input);
+    end = getMemoryUsage(begin);
+    cout << "oWT = " << end - begin << "MB" << endl;
   }
 
   return 0;

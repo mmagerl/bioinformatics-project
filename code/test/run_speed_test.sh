@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [ $# -eq 0 ]; then
+if [ $# -ne 1 ]; then
 	echo $0 ": Expected one argument - path to sintetic dataset"
 else
 	mkdir -p ../build/
