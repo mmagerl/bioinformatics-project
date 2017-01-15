@@ -5,6 +5,7 @@
 #include <cstring>
 #include <string>
 
+#include "../other/oWaveletTree.h"
 #include "../include/WaveletTree.h"
 #include "../include/Brute.h"
 
@@ -52,36 +53,36 @@ string generateFilename(int m, int s){
 }
 
 int main(int argc, char *argv[]) {
-  vector<int> mem{2, 3, 4, 5, 6, 7};
-  vector<int> sigma{4, 16, 28};
+  vector<int> mem{7};
+  vector<int> sigma{28};
+  bool our_impl = true;
 
   double begin, end;
   string input;
-  int repeat = 100;
-  int repeat_index = 5;
 
+  if (our_impl){
+    cout << "Naša";
+  } else{
+    cout << "Njihova";
+  }
+  cout << " implementacija: " << endl;
   for (auto m : mem){
     cout << "====================" << endl;
     cout << "Size: 10^" << m << endl;
     cout << "====================" << endl;
     for (auto s : sigma){
       cout << "Alphabet size: " << s << endl;
-      // cout << genFilename(m, s) << endl;
       ifstream file(generateFilename(m, s));
       getline(file, input);
 
-      if (m <= repeat_index){
-        for (int i = 0; i < repeat; i++){
-          WaveletTree vt(input);
-        }
-        end = getMemoryUsage(begin);
-        cout << "-------------> " << (end - begin) / repeat << "MB" << endl;
-      } else {
-        begin = getMemoryUsage(0);
+      begin = getMemoryUsage(0);
+      if (our_impl){
         WaveletTree vt(input);
-        end = getMemoryUsage(begin);
-        cout << "-------------> " << end - begin << "MB" << endl;
+      } else{
+        oWaveletTree ovt(input);
       }
+      end = getMemoryUsage(begin);
+      cout << "getMemoryUsage(): " << end - begin << "MB" << endl;
       cout << endl;
     }
   }
