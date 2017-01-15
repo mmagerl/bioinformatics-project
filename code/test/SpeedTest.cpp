@@ -1,9 +1,10 @@
-#include <fstream>
-#include <string>
-#include <iostream>
 #include <ctime>
+#include <fstream>
+#include <iostream>
+#include <map>
 #include <random>
 #include <set>
+#include <string>
 
 #include "../include/WaveletTree.h"
 #include "../other/oWaveletTree.h"
@@ -14,6 +15,7 @@ using namespace std;
 const int N_QUERY = 1000000;
 
 vector<int> positions;
+vector<int> counts;
 vector<char> chars;
 
 WaveletTree* vt;
@@ -24,15 +26,15 @@ clock_t sTime;
 clock_t eTime;
 
 void prepare(string& input) {
-  set<char> sChars;
   vector<char> lChars;
+  map<char, int> charToCount;
 
   int n = input.size();
   for (auto c : input) {
-    sChars.insert(c);
+    ++charToCount[c];
   }
-  for (auto c : sChars) {
-    lChars.push_back(c);
+  for (auto& kv : charToCount) {
+    lChars.push_back(kv.first);
   }
 
   // generate random queries
@@ -42,7 +44,9 @@ void prepare(string& input) {
 
   for (int i = 0; i < N_QUERY; ++i) {
     positions.push_back(dist(eng)%n);
-    chars.push_back(lChars[dist(eng)%lChars.size()]);
+    auto c = lChars[dist(eng)%lChars.size()];
+    chars.push_back(c);
+    counts.push_back(1+rand()%charToCount[c]);
   }
 }
 
@@ -96,9 +100,39 @@ void testRank() {
   cout << endl;
 }
 
+void testSelect() {
+  printf("select (us)\n");
+  int select;
+  // our solution
+  sTime = clock();
+  for (int i = 0; i < N_QUERY; ++i) {
+    select = vt->select(counts[i], chars[i]);
+  }
+  eTime = clock();
+  cout << "mWT = " << double(eTime - sTime) / CLOCKS_PER_SEC * 1000000 / N_QUERY << endl;
+
+  // other solution
+  sTime = clock();
+  for (int i = 0; i < N_QUERY; ++i) {
+    select = ovt->select(chars[i], counts[i]);
+  }
+  eTime = clock();
+  cout << "oWT = " << double(eTime - sTime) / CLOCKS_PER_SEC * 1000000 / N_QUERY << endl;
+
+  // brute solution
+  sTime = clock();
+  for (int i = 0; i < 1000; i++){
+    select = brute->select(counts[i], chars[i]);
+  }
+  eTime = clock();
+  cout << "BRT = " << double(eTime - sTime) / CLOCKS_PER_SEC * 1000 << endl;
+
+  cout << endl;
+}
+
 void testAccess() {
   printf("access (us)\n");
-  int access;
+  char access;
   // our solution
   sTime = clock();
   for (auto pos : positions) {
@@ -138,7 +172,8 @@ int main(int argc, char *argv[]) {
 
   prepare(input);
   testConstruction(input);
-  //testRank();
+  testRank();
+  testSelect();
   testAccess();
 
   return 0;
