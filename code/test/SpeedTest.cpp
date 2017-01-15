@@ -51,7 +51,7 @@ void prepare(string& input) {
 }
 
 void testConstruction(string& input) {
-  printf("construction (s)\n");
+  printf("Construction (s)\n");
   // our solution
   sTime = clock();
   vt = new WaveletTree(input);
@@ -70,9 +70,27 @@ void testConstruction(string& input) {
   cout << endl;
 }
 
-void testRank() {
-  printf("rank (us)\n");
+void testRank(bool testEquality = false) {
+  printf("Rank (us)\n");
   int rank;
+
+  if (testEquality) {
+    // test equality
+    auto equal = true;
+    for (int i = 0; i < N_QUERY; ++i) {
+      auto rank1 = vt->rank(positions[i], chars[i]);
+      auto rank2 = ovt->rank(chars[i], positions[i]);
+      equal &= (rank1 == rank2);
+
+      if (rank1 != rank2) {
+        auto rank3 = brute->rank(positions[i], chars[i]);
+        printf("NOT EQUAL (i = %d): %d, %lu, %d\n", i, rank1, rank2, rank3);
+        return;
+      }
+    }
+    printf("equal = %s\n", equal ? "true" : "false");
+  }
+
   // our solution
   sTime = clock();
   for (int i = 0; i < N_QUERY; i++){
@@ -100,9 +118,27 @@ void testRank() {
   cout << endl;
 }
 
-void testSelect() {
-  printf("select (us)\n");
+void testSelect(bool testEquality = false) {
+  printf("Select (us)\n");
   int select;
+
+  // test equality
+  if (testEquality) {
+    auto equal = true;
+    for (int i = 0; i < N_QUERY; ++i) {
+      auto select1 = vt->select(counts[i], chars[i]);
+      auto select2 = ovt->select(chars[i], counts[i]);
+      equal &= (select1 == select2);
+
+      if (select1 != select2) {
+        auto select3 = brute->select(counts[i], chars[i]);
+        printf("NOT EQUAL (i = %d): %d, %lu, %d\n", i, select1, select2, select3);
+        return;
+      }
+    }
+    printf("equal = %s\n", equal ? "true" : "false");
+  }
+
   // our solution
   sTime = clock();
   for (int i = 0; i < N_QUERY; ++i) {
@@ -130,9 +166,27 @@ void testSelect() {
   cout << endl;
 }
 
-void testAccess() {
-  printf("access (us)\n");
+void testAccess(bool testEquality = false) {
+  printf("Access (us)\n");
   char access;
+
+  // test equality
+  if (testEquality) {
+    auto equal = true;
+    for (int i = 0; i < N_QUERY; ++i) {
+      auto access1 = vt->access(positions[i]);
+      auto access2 = ovt->access(positions[i]);
+      equal &= (access1 == access2);
+
+      if (access1 != access2) {
+        auto access3 = brute->access(positions[i]);
+        printf("NOT EQUAL (i = %d, pos = %d): %c, %c, %c\n", i, positions[i], access1, access2, access3);
+        return;
+      }
+    }
+    printf("equal = %s\n", equal ? "true" : "false");
+  }
+
   // our solution
   sTime = clock();
   for (auto pos : positions) {
@@ -151,11 +205,11 @@ void testAccess() {
 
   // brute solution
   sTime = clock();
-  for (int i = 0; i < 1000; i++){
+  for (int i = 0; i < 100; i++){
     access = brute->access(positions[i]);
   }
   eTime = clock();
-  cout << "BRT = " << double(eTime - sTime) / CLOCKS_PER_SEC * 1000 << endl;
+  cout << "BRT = " << double(eTime - sTime) / CLOCKS_PER_SEC * 10000 << endl;
 
   cout << endl;
 }
@@ -172,9 +226,9 @@ int main(int argc, char *argv[]) {
 
   prepare(input);
   testConstruction(input);
-  testRank();
-  testSelect();
-  testAccess();
+  testRank(true);
+  testSelect(true);
+  testAccess(true);
 
   return 0;
 }

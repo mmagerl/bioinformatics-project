@@ -12,12 +12,12 @@ class RRR {
     int numBlocks; // number of blocks
     int numSuperblocks; // number of superblocks
 
-    vector<int> superblockCumSum; // cumulative sum of ones to i-th superblock, inclusive, size ~ (n/(b*f))
-    vector<int> blockClass; // block class, ie. number of ones in block, size ~ (n/b)
-    vector<int> blockOffset; // block offset in class, size ~ (n/b)
+    vector<uint32_t> superblockCumSum; // cumulative sum of ones to i-th superblock, inclusive, size ~ (n/(b*f))
+    vector<uint8_t> blockClass; // block class, ie. number of ones in block, size ~ (n/b)
+    vector<uint16_t> blockOffset; // block offset in class, size ~ (n/b)
     // cumulative sum of ones to i-th position in block indexed with (class,offset), 0-indexed
     // size ~ (b*2^b)
-    vector<vector<vector<int> > > cumSumInBlock;
+    vector<vector<vector<uint8_t> > > cumSumInBlock;
 
     void construct(vector<bool> bits, int _b, int _f);
     int calcForType(int total, int ones, bool type);
