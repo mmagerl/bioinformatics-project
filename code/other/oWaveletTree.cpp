@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "oWaveletTree.h"
 
 // Returns root node of the wavelet tree

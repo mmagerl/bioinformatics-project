@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "oWaveletNode.h"
 
 // Returns left child node
