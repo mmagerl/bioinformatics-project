@@ -80,7 +80,7 @@ void testRank() {
   // other solution
   sTime = clock();
   for (int i = 0; i < N_QUERY; i++){
-    rank = ovt->rank(positions[i], chars[i]);
+    rank = ovt->rank(chars[i], positions[i]);
   }
   eTime = clock();
   cout << "oWT = " << double(eTime - sTime) / CLOCKS_PER_SEC * 1000000 / N_QUERY << endl;
@@ -89,6 +89,36 @@ void testRank() {
   sTime = clock();
   for (int i = 0; i < 1000; i++){
     rank = brute->rank(positions[i], chars[i]);
+  }
+  eTime = clock();
+  cout << "BRT = " << double(eTime - sTime) / CLOCKS_PER_SEC * 1000 << endl;
+
+  cout << endl;
+}
+
+void testAccess() {
+  printf("access (us)\n");
+  int access;
+  // our solution
+  sTime = clock();
+  for (auto pos : positions) {
+    access = vt->access(pos);
+  }
+  eTime = clock();
+  cout << "mWT = " << double(eTime - sTime) / CLOCKS_PER_SEC * 1000000 / N_QUERY << endl;
+
+  // other solution
+  sTime = clock();
+  for (auto pos : positions) {
+    access = ovt->access(pos);
+  }
+  eTime = clock();
+  cout << "oWT = " << double(eTime - sTime) / CLOCKS_PER_SEC * 1000000 / N_QUERY << endl;
+
+  // brute solution
+  sTime = clock();
+  for (int i = 0; i < 1000; i++){
+    access = brute->access(positions[i]);
   }
   eTime = clock();
   cout << "BRT = " << double(eTime - sTime) / CLOCKS_PER_SEC * 1000 << endl;
@@ -108,7 +138,8 @@ int main(int argc, char *argv[]) {
 
   prepare(input);
   testConstruction(input);
-  testRank();
+  //testRank();
+  testAccess();
 
   return 0;
 }
