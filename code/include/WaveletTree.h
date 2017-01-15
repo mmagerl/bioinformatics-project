@@ -9,14 +9,17 @@
 class WaveletTreeNode {
 	private:
     	RRR* rrr;
+	    map<char, int> sigma; // maps character to position in sorted array of characters
+
+      int getNumCharactersInLeft();
 
     public:
 	    WaveletTreeNode* parent;
 	    WaveletTreeNode* left;
 	    WaveletTreeNode* right;
-	    map<char, int> sigma; // mapa sa znaka na poziciju u sortiranom nizu znakova
 
 	    WaveletTreeNode(WaveletTreeNode* _parent, string arr, map<char, int> _sigma, map<char, WaveletTreeNode*>& charToNode);
+      bool hasChar(char c);
 	    bool isRight(char c);
 	    char getCharacterInSigma(int pos);
 	    int rank0(int i);

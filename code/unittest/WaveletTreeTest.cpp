@@ -19,6 +19,8 @@ TEST (WaveletTreeTest, Rank) {
 }
 
 TEST (WaveletTreeTest, Select) {
+	EXPECT_EQ(-1, waveletTree.select(1, 'z'));
+	EXPECT_EQ(-1, waveletTree.select(7, 'z'));
 	EXPECT_EQ(0, waveletTree.select(1, 'B'));
 	EXPECT_EQ(1, waveletTree.select(1, 'i'));
 	EXPECT_EQ(10, waveletTree.select(1, 't'));
@@ -27,8 +29,6 @@ TEST (WaveletTreeTest, Select) {
 	EXPECT_EQ(2, waveletTree.select(1, 'o'));
 	EXPECT_EQ(6, waveletTree.select(2, 'o'));
 	EXPECT_EQ(25, waveletTree.select(3, 'o'));
-	EXPECT_EQ(-1, waveletTree.select(1, 'z'));
-	EXPECT_EQ(-1, waveletTree.select(7, 'z'));
 }
 
 TEST (WaveletTreeTest, Access) {

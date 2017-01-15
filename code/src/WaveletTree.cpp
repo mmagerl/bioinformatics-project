@@ -21,31 +21,42 @@ WaveletTreeNode::WaveletTreeNode(WaveletTreeNode* _parent, string arr, map<char,
     }
   }
   rrr = new RRR(bits);
+  left = right = NULL;
 
   if (sigma.size() <= 2) {
     for (auto entry : sigma) {
       charToNode[entry.first] = this;
     }
-    left = right = NULL;
   } else {
     map<char, int> lSigma;
     map<char, int> rSigma;
     for (auto entry : sigma) {
       if (isRight(entry.first)) {
-        rSigma[entry.first] = entry.second-sigma.size()/2;
+        rSigma[entry.first] = entry.second-getNumCharactersInLeft();
       } else {
         lSigma[entry.first] = entry.second;
       }
     }
 
     left = new WaveletTreeNode(this, lArr, lSigma, charToNode);
-    right = new WaveletTreeNode(this, rArr, rSigma, charToNode);
+    if (rSigma.size() > 0) {
+      right = new WaveletTreeNode(this, rArr, rSigma, charToNode);
+    }
   }
+}
+
+bool WaveletTreeNode::hasChar(char c) {
+  return sigma.count(c);
+}
+
+// returns number of characters in left child
+int WaveletTreeNode::getNumCharactersInLeft() {
+  return (sigma.size()+1)/2;
 }
 
 // returns whether char is in right child
 bool WaveletTreeNode::isRight(char c) {
-  return (sigma[c] >= sigma.size()/2);
+  return sigma[c] >= getNumCharactersInLeft(); 
 }
 
 char WaveletTreeNode::getCharacterInSigma(int pos) {
@@ -95,6 +106,12 @@ WaveletTree::WaveletTree(string arr) {
 // number of occurrences of char c to position i (0-indexed), inclusive
 int WaveletTree::rank(int i, char c) {
   WaveletTreeNode* cur = root;
+
+  // if char does not exist return 0
+  if (!cur->hasChar(c)) {
+    return 0;
+  }
+
   int pos = i; // position in the current node
   while (cur != NULL) {
     if (cur->isRight(c)) {
@@ -115,13 +132,13 @@ int WaveletTree::rank(int i, char c) {
 
 // index of the i-th character c
 int WaveletTree::select(int i, char c) {
-  // start with leaf containing only two characters, one of them is c
-  WaveletTreeNode* cur = charToNode[c];
-
   // if char does not exist, return -1
-  if (cur == NULL) {
+  if (!charToNode.count(c)) {
     return -1;
   }
+
+  // start with leaf containing only two characters, one of them is c
+  WaveletTreeNode* cur = charToNode[c];
 
   int pos; // position in the current node
   if (cur->isRight(c)) {
