@@ -151,8 +151,8 @@ void RRR::construct(vector<bool> bits, int _b, int _f) {
 
 // time-complexity - O(b*2^b) for preprocessing
 RRR::RRR(vector<bool> bits) {
-  int b = max((int)(log2(bits.size()) / 2), 1);
-  int f = max((int)pow(log2(bits.size()), 2), 1);
+  int b = max((int)(floor(log2(bits.size())) / 2), 1);
+  int f = max((int)(pow(floor(log2(bits.size())), 2) / b), 1);
   construct(bits, b, f);
 }
 
