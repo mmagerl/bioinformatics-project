@@ -54,7 +54,7 @@ int RRR::getIndSuperblock(int indBlock) {
 }
 
 int RRR::getCumSumToSuperblock(int indSuperblock, bool type) {
-  return (indSuperblock < 0) ? 0 : calcForType(b*f, superblockCumSum[indSuperblock], type);
+  return (indSuperblock < 0) ? 0 : calcForType((indSuperblock+1)*b*f, superblockCumSum[indSuperblock], type);
 }
 
 bool RRR::isBlockStart(int ind) {
@@ -98,10 +98,9 @@ int RRR::select(int i, bool type) {
   return indBlock*b + indInBlock;
 }
 
-// time-complexity - O(b*2^b) for preprocessing
-RRR::RRR(vector<bool> bits) {
-  b = max((int)(log2(bits.size()) / 2), 1);
-  f = max((int)pow(log2(bits.size()), 2), 1);
+void RRR::construct(vector<bool> bits, int _b, int _f) {
+  b = _b;
+  f = _f;
 
   // preprocessing - O(b*2^b) time and memory
   vector<int> blockValToOffset;
@@ -148,6 +147,18 @@ RRR::RRR(vector<bool> bits) {
     cumsum += bits[i];
     superblockCumSum[getIndSuperblock(i)] = cumsum;
   }
+}
+
+// time-complexity - O(b*2^b) for preprocessing
+RRR::RRR(vector<bool> bits) {
+  int b = max((int)(log2(bits.size()) / 2), 1);
+  int f = max((int)pow(log2(bits.size()), 2), 1);
+  construct(bits, b, f);
+}
+
+// time-complexity - O(b*2^b) for preprocessing
+RRR::RRR(vector<bool> bits, int _b, int _f) {
+  construct(bits, _b, _f);
 }
 
 // number of zeros to position i, inclusive

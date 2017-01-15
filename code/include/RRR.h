@@ -19,6 +19,7 @@ class RRR {
     // size ~ (b*2^b)
     vector<vector<vector<int> > > cumSumInBlock;
 
+    void construct(vector<bool> bits, int _b, int _f);
     int calcForType(int total, int ones, bool type);
     int findSuperblock(int i, bool type);
     int findIndexInBlock(int indBlock, int i, bool type);
@@ -32,6 +33,7 @@ class RRR {
 
 	public:
     RRR(std::vector<bool> bits);
+    RRR(std::vector<bool> bits, int _b, int _f);
 		int rank0(int i);
 		int rank1(int ind);
     int select0(int i);
