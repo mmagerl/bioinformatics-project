@@ -375,6 +375,11 @@ Tablica \ref{table:mem_sin} prikazuje potrošnju memorije pri izgradnji stabla i
 Tablica \ref{table:time-fasta} prikazuje vremena izgradnje stabla i izvršavanja upita za obje implementacije. 
 Tablica \ref{table:mem-fasta} prikazuje potrošnju memorije pri izgradnji stabla i cijelog procesa za obje implementacije.
 
+Svi testovi pokazuju da je ova implementacija vremenski i memorijski kvalitetnija. Velika razlika
+može se primijetiti u brzini izgradnje stabla valića, te brzinama izvođenja $select$ i $access$ 
+upita. Također, znatna je ušteda memorije koju zauzimaju sami proces i struktura tijekom i nakon
+izgradnje stabla valića.
+
 \begin{table}[h]
 \caption{Vrijeme izgradnje stabla i izvršavanja upita - sintetičke datoteke}
 \label{table:sin_time}
