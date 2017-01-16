@@ -369,8 +369,11 @@ od $10^2$ do $10^7$ znakova i veličinama abecede $4$, $16$ i $28$. Stvarni skup
 su sa stranice \url{https://www.ncbi.nlm.nih.gov/} i uključuju zapise genoma nekih virusa, bakterija 
 i organizama. 
 
-Napravljena evaluacija radila je usporedbu između ove implementacije i implementacije studenata
-iz akademske godine 2015/2016. Tablica \ref{table:sin_time} prikazuje 
+Napravljena evaluacija radila je usporedbu između ove implementacije (lijevi stupac) i implementacije studenata iz akademske godine 2015/2016 (desni stupac). 
+Tablica \ref{table:sin_time} prikazuje vrijeme izgradnje stabla valića ($tc$) u sekundama te prosječna vremena izvođenja operacija $rank$, $select$ i $access$ u mikrosekundama za obje implementacije. Stupac označen s $n$ predstavlja broj znakova u skupu podataka, $|\Sigma|$ veličinu abecede.  
+Tablica \ref{table:mem_sin} prikazuje potrošnju memorije pri izgradnji stabla i cijelog procesa za obje implementacije. 
+Tablica \ref{table:time-fasta} prikazuje vremena izgradnje stabla i izvršavanja upita za obje implementacije. 
+Tablica \ref{table:mem-fasta} prikazuje potrošnju memorije pri izgradnji stabla i cijelog procesa za obje implementacije.
 
 \begin{table}[h]
 \caption{Vrijeme izgradnje stabla i izvršavanja upita - sintetičke datoteke}
@@ -411,8 +414,11 @@ iz akademske godine 2015/2016. Tablica \ref{table:sin_time} prikazuje
   \end{tabular}
 \end{table}
 
+
+  
 \begin{table}[h]
 \caption{Potrošnja memorije pri izgradnji stabla - sintetičke datoteke}
+\label{table:mem_sin}
 \centering
   \begin{tabular}{c|c|c|c|c|c}
     $n$ & $|\Sigma|$ &
@@ -449,8 +455,10 @@ iz akademske godine 2015/2016. Tablica \ref{table:sin_time} prikazuje
   \end{tabular}
 \end{table}
 
+
 \begin{table}[h]
 \caption{Vrijeme izgradnje stabla i izvršavanja upita - FASTA datoteke}
+\label{table:time-fasta}
 \centering
   \begin{tabular}{c|c|c|c|c|c|c|c|c|c|c}
     \specialcell{skup\\podataka} & $n$ & $|\Sigma|$ & \multicolumn{2}{c|}{$tc$ $(s)$} &
@@ -466,8 +474,11 @@ iz akademske godine 2015/2016. Tablica \ref{table:sin_time} prikazuje
   \end{tabular}
 \end{table}
 
+
+
 \begin{table}[h]
 \caption{Potrošnja memorije pri izgradnji stabla - FASTA datoteke}
+\label{table:mem-fasta}
 \centering
   \begin{tabular}{c|c|c|c|c|c|c}
     \specialcell{skup\\podataka} & $n$ & $|\Sigma|$ &
