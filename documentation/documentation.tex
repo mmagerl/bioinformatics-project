@@ -225,6 +225,19 @@ Tražimo na primjeru slike \ref{fig:rrr} $access_1(25)$. Ulazni niz, blokovi i s
   \end{tabular}
 \end{table}
 
+
+\chapter{Zaključak}
+
+U ovom radu napravljena je implementacija stabla valića koristeći RRR strukturu. Stablo valića koristi se za brze upite tipa koliko ima znakova $c$ do pozicije $i$ u ulaznom nizu te na kojoj se poziciji u ulaznom nizu nalazi $i$-ti znak $c$. Prvi izazov bio je implementirati RRR strukturu koja ima iste upite kao i stablo valića s razlikom što je ulaz binarni niz znakova. Sljedeći izazov bio je implementirati stablo valića koristeći RRR sturkturu kao osnovu za čvor stabla valića. 
+
+U radu je napravljena vremenska i memorijska usporedba s implementacijom iste strukture studenata iz akademske godine 2015/2016. Rezultati usporedbe govore da je ova implementacija barem jednako brza kao prošlogodišnja za upite $rank$, $select$ i $access$ te višestruko brža u vremenu izgradnje stabla. Također, memorijska potrošnja je manja od prošlogodišnje.
+
+Jedan od mogućih razloga manje memorijske potrošnje jest ograničavanje veličine niza na $2 \cdot 10^9$. Do tog ograničenja je došlo zbog napomene da rezultati moraju biti prikazani za ulaze do $10^7$. Potencijalno poboljšanje ove strukture bilo bi proširenje na veće nizove. Također, neke implementacije nisu do kraja optimizirane. Primjerice u RRR strukturi $rank$ operacija trenutno radi u složenosti $O(n)$, gdje je $n$ veličina ulaznog niza, a mogla bi raditi u $O(1)$. Takva implementacija bi svakako zahtjevala više memorije. 
+
+Još jedna stvar koja bi mogla ubrzati izgradnju te smanjiti potrošnju memorije bila bi dijeljena lookup tablica RRR strukture unutar stabla valića. Ta optimizacija zahtjevala bi veće promjene na trenutnoj implmenetaciji pa zato i nije implementirana. 
+
+ 
+
 \bibliography{literature}
 \bibliographystyle{fer}
 
