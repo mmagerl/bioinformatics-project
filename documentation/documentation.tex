@@ -10,6 +10,7 @@
 \usepackage{svg}
 \usepackage{listings}
 \usepackage[croatian,boxed,noline]{algorithm2e}
+\usepackage[group-separator={,}]{siunitx}
 \SetKwProg{Fn}{Funkcija}{}{}
 
 \definecolor{dkgreen}{rgb}{0,0.6,0}
@@ -35,6 +36,7 @@
 }
 
 \renewcommand{\lstlistingname}{Isječak koda}% Listing -> Isječak koda
+\newcommand{\specialcell}[2][c]{\begin{tabular}[#1]{@{}c@{}}#2\end{tabular}}
 
 \begin{document}
 
@@ -187,7 +189,17 @@ Metoda $access(i)$ vraća koji se znak nalazi na danoj poziciji - nula ili jedan
 	\label{fig:wavelet-tree-example}
 \end{figure}
 
+\chapter{Rezultati}
 
+\begin{table}[h]
+\centering
+  \begin{tabular}{c|c|c|c|c|c|c|c|c|c|c}
+    \specialcell{skup\\podataka} & $n$ & $|\Sigma|$ & \multicolumn{2}{c|}{$tc$ $(s)$} &
+    \multicolumn{2}{c|}{$rank$ $(\mu s)$} & \multicolumn{2}{c|}{$select$ $(\mu s)$} & \multicolumn{2}{c}{$access$ $(\mu s)$}\\ \hline
+    Human21 & \num{33543332} & \num{5} & \num{33} & \num{532} & \num{1.5} & \num{1.9} & \num{3.6} & \num{15.8} & \num{1.6} & \num{4.6} \\
+    Human21 & \num{33543332} & \num{5} & \num{33} & \num{0.001} & \num{1.5} & \num{1.9} & \num{3.6} & \num{15.8} & \num{1.6} & \num{4.6} \\
+  \end{tabular}
+\end{table}
 
 \bibliography{literature}
 \bibliographystyle{fer}
