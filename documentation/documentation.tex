@@ -49,7 +49,15 @@
 \tableofcontents
 
 \chapter{Uvod}
-alo
+U ovom radu opisana je implementacija stabla valića\citep{alexbowe}  koje se koristi za brze $rank$ i $select$ upite nad ulaznim nizom znakova. Konkretna implementacija bazirana je na RRR strukturi \citep{DBLP:journals/corr/abs-0705-0552}.
+
+
+
+Brza implementacija metoda $rank$ i $select$ znače da se stablo valića može iskoristiti za pronalaženje podudarajućih nizova, odnosno podnizova. 
+
+U poglavlju \ref{sec:rrr} opisana je RRR struktura i dan je primjer upita koji se nad tom strukturom mogu zvati. U poglavlju \ref{sec:wavelet-tree} opisano je stablo valića te je također dan primjer upita koji se nad tom strukturom mogu zvati. U poglavlju \ref{sec:results} napisana su mjerenja koja su pokrenuta nad sintetičkim ulazima te nad stvarnim ulazima koji predstavljaju genome nekih virusa, bakterija i organizama. Također napravljena je usporedba s implementacijom studenata s kolegija Bioinformatika akademske godine 2015/2016. 
+
+U zadnjem \ref{sec:conclusion}. poglavlju dan je kratki zaključak o implementaciji i rezultatima ispitivanja rješenja te je dano nekoliko primjera gdje bi se, u budućnosti, mogla napraviti poboljšanja u odnosu na ovu implementaciju. 
 
 \chapter{RRR struktura}
 \label{sec:rrr}
@@ -370,6 +378,7 @@ U idućim poglavljima dani su opisi
 
 
 \chapter{Zaključak}
+\label{sec:conclusion}
 
 U ovom radu napravljena je implementacija stabla valića koristeći RRR strukturu. Stablo valića koristi se za brze upite tipa koliko ima znakova $c$ do pozicije $i$ u ulaznom nizu te na kojoj se poziciji u ulaznom nizu nalazi $i$-ti znak $c$. Prvi izazov bio je implementirati RRR strukturu koja ima iste upite kao i stablo valića s razlikom što je ulaz binarni niz znakova. Sljedeći izazov bio je implementirati stablo valića koristeći RRR sturkturu kao osnovu za čvor stabla valića. 
 
@@ -379,7 +388,6 @@ Jedan od mogućih razloga manje memorijske potrošnje jest ograničavanje velič
 
 Još jedna stvar koja bi mogla ubrzati izgradnju te smanjiti potrošnju memorije bila bi dijeljena lookup tablica RRR strukture unutar stabla valića. Ta optimizacija zahtjevala bi veće promjene na trenutnoj implmenetaciji pa zato i nije implementirana. 
 
- %
 
 \bibliography{literature}
 \bibliographystyle{fer}
