@@ -1,3 +1,7 @@
+/*
+ * Written by Mislav Magerl and Matija Milišić 
+ */
+
 #include <algorithm>
 #include <vector>
 #include <cmath>

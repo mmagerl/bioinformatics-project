@@ -51,9 +51,7 @@
 \chapter{Uvod}
 U ovom radu opisana je implementacija stabla valića\citep{alexbowe}  koje se koristi za brze $rank$ i $select$ upite nad ulaznim nizom znakova. Konkretna implementacija bazirana je na RRR strukturi \citep{DBLP:journals/corr/abs-0705-0552}.
 
-
-
-Brza implementacija metoda $rank$ i $select$ znače da se stablo valića može iskoristiti za pronalaženje podudarajućih nizova, odnosno podnizova. 
+Brza implementacija metoda $rank$ i $select$ znače da se stablo valića može iskoristiti za pronalaženje podudarajućih nizova, odnosno podnizova. Neke od struktura koji rješavaju isti problem su sufiksna stabla, sufiksna polja. Svaka od ovih struktura, bilo stablo valića, sufiksno stablo ili sufiksno polje ima neke svoje predsnosti i nedostatke u vidu memorije i vremena. U ovom radu obradit će se upravo stablo valića.
 
 U poglavlju \ref{sec:rrr} opisana je RRR struktura i dan je primjer upita koji se nad tom strukturom mogu zvati. U poglavlju \ref{sec:wavelet-tree} opisano je stablo valića te je također dan primjer upita koji se nad tom strukturom mogu zvati. U poglavlju \ref{sec:results} napisana su mjerenja koja su pokrenuta nad sintetičkim ulazima te nad stvarnim ulazima koji predstavljaju genome nekih virusa, bakterija i organizama. Također napravljena je usporedba s implementacijom studenata s kolegija Bioinformatika akademske godine 2015/2016. U poglavlju \ref{sec:implementation} opisani su neki detalji implementacije projekta u jeziku C++.
 
@@ -61,7 +59,7 @@ U zadnjem \ref{sec:conclusion}. poglavlju dan je kratki zaključak o implementac
 
 \chapter{RRR struktura}
 \label{sec:rrr}
-RRR struktura je podatkovna struktura koja se koristi za brze rank, select te access upite nad binarnim nizom znakova. RRR strukturu su predložili Raman, Raman and Rao \citep{DBLP:journals/corr/abs-0705-0552} te je po njima i dobila ime. Metoda $rank(i)$ odgovara na pitanje koliko se jedinica nalazi u ulaznom nizu do, uključivo, indeksa $i$. Metoda $select(i)$ odgovara na pitanje na kojem se indeksu u ulaznom nizu nalazi $i$-ta jedinica. Metoda $access(i)$ odgovara koji znak se nalazi na indeksu $i$ u ulaznom nizu - nula ili jedinica.
+RRR struktura je podatkovna struktura koja se koristi za brze $rank$, $select$ te $access$ upite nad binarnim nizom znakova. RRR strukturu su predložili Raman, Raman and Rao \citep{DBLP:journals/corr/abs-0705-0552} te je po njima i dobila ime. Metoda $rank(i)$ odgovara na pitanje koliko se jedinica nalazi u ulaznom nizu do, uključivo, indeksa $i$. Metoda $select(i)$ odgovara na pitanje na kojem se indeksu u ulaznom nizu nalazi $i$-ta jedinica. Metoda $access(i)$ odgovara koji znak se nalazi na indeksu $i$ u ulaznom nizu - nula ili jedinica.
 
 \section{Izgradnja strukture}
 \label{sec:izgradnja-rrr}
@@ -77,7 +75,7 @@ Lookup tablica sadrži $2^b$ redova. Svaki red prikazuje jednu od mogućih razli
 \textbf{Izgradnja strukture}
 
 Nakon izgradnje lookup tablice za svaki blok se računa klasa i pomak te se spremaju u strukturi umjesto originalnog niza. Jedan zapis o klasi veličine je 1B iz razloga što je ukupan broj klasa $log_2b$ što za vrijednosti $b$ do $16$, odnosno vrijednosti $n$ do $10^{10}$, iznosi $4$ bita. Jedan zapis o pomaku je veličine 2B iz razloga što za svaku klasu $c$ ima $\binom{b}{c}$ zapisa, tj. maksimalno $\binom{b}{\frac{b}{2}}$. Ako se uzme da je $n$ maksimalno $10^{10}$, $b$ iznosi maksimalno $16$. Najveći pomak u nekoj klasi tada iznosi $\binom{16}{8}=12870$ za što nije potrebno više od 2B.  Ukupno se, dakle, za jedan blok troši 3B memorije. Ukupna memorijska složenost je $O(\frac{n}{b})$, odnosno izraženo samo preko veličine niza $O(\frac{n}{log_2n})$
-Također, struktura pamti i kumulativnu sumu do svakog superbloka. Memorijska složenost te sume je $O(frac{n}{b f})$, odnosno izraženo samo preko veličine niza $O(\frac{n}{(\log_2n)^2})$.
+Struktura također pamti i kumulativnu sumu do svakog superbloka. Memorijska složenost te sume je $O(frac{n}{b f})$, odnosno izraženo samo preko veličine niza $O(\frac{n}{(\log_2n)^2})$.
 
 \begin{figure}[ht]
 	\centering
@@ -119,7 +117,7 @@ Operacija $rank_1(i)$ se računa na sljedeći način:
 	\item Izračuna se suma svih blokova do bloka u kojem se pozicija $i$ nalazi
 	\item Pomoću lookup tablice se na sumu dodaje suma brojeva do pozicije $i$
 \end{enumerate}
-Pseudokod:
+Pseudokod metode $rank_1$:
 
 \begin{algorithm}[H]
  \caption{Pseudokod metode $rank_1$}
@@ -369,8 +367,18 @@ Operacija \texttt{access} kreće od korijena stabla i spušta se do njegovih lis
 \chapter{Rezultati}
 \label{sec:results}
 
+U ovom poglavlju prikazane su vremenska i memorijska karakteristika stabla valića na sintetičkim i 
+stvarnim skupovima podataka. U tu svrhu napravljena su 24 sintetička skupa podataka s veličinama
+od $10^2$ do $10^7$ znakova i veličinama abecede $4$, $16$ i $28$. Stvarni skupovi podataka preuzeti 
+su sa stranice \url{https://www.ncbi.nlm.nih.gov/} i uključuju zapise genoma nekih virusa, bakterija 
+i organizama. 
+
+Napravljena evaluacija radila je usporedbu između ove implementacije i implementacije studenata
+iz akademske godine 2015/2016. Tablica \ref{table:sin_time} prikazuje 
+
 \begin{table}[h]
 \caption{Vrijeme izgradnje stabla i izvršavanja upita - sintetičke datoteke}
+\label{table:sin_time}
 \centering
   \begin{tabular}{c|c|c|c|c|c|c|c|c|c}
     $n$ & $|\Sigma|$ & \multicolumn{2}{c|}{$tc$ $(s)$} &
@@ -414,34 +422,34 @@ Operacija \texttt{access} kreće od korijena stabla i spušta se do njegovih lis
     $n$ & $|\Sigma|$ &
     \multicolumn{2}{c|}{Proces $(MB)$} & \multicolumn{2}{c}{Struktura $(MB)$} \\ \hline
     \multirow{3}{*}{$10^2$}
-      & \num{4} & \num{} & \num{} & \num{} & \num{} \\
-      & \num{16} & \num{} & \num{} & \num{} & \num{} \\
-      & \num{28} & \num{} & \num{} & \num{} & \num{} \\
+      & \num{4} & \num{1.57} & \num{1.59} & \num{0.18} & \num{0.18} \\
+      & \num{16} & \num{1.59} & \num{1.59} & \num{0.18} & \num{0.18} \\
+      & \num{28} & \num{1.6} & \num{1.59} & \num{0.18} & \num{0.18} \\
     \hline
     \multirow{3}{*}{$10^3$}
-      & \num{4} & \num{} & \num{} & \num{} & \num{} \\
-      & \num{16} & \num{} & \num{} & \num{} & \num{} \\
-      & \num{28} & \num{} & \num{} & \num{} & \num{} \\
+      & \num{4} & \num{1.58} & \num{1.6} & \num{0.19} & \num{0.19} \\
+      & \num{16} & \num{1.6} & \num{1.6} & \num{0.19} & \num{0.19} \\
+      & \num{28} & \num{1.63} & \num{1.6} & \num{0.19} & \num{0.19} \\
     \hline
     \multirow{3}{*}{$10^4$}
-      & \num{4} & \num{} & \num{} & \num{} & \num{} \\
-      & \num{16} & \num{} & \num{} & \num{} & \num{} \\
-      & \num{28} & \num{} & \num{} & \num{} & \num{} \\
+      & \num{4} & \num{1.62} & \num{1.67} & \num{0.2} & \num{0.2} \\
+      & \num{16} & \num{1.68} & \num{1.68} & \num{0.2} & \num{0.2} \\
+      & \num{28} & \num{1.72} & \num{1.69} & \num{0.2} & \num{0.2} \\
     \hline
     \multirow{3}{*}{$10^5$}
-      & \num{4} & \num{} & \num{} & \num{} & \num{} \\
-      & \num{16} & \num{} & \num{} & \num{} & \num{} \\
-      & \num{28} & \num{} & \num{} & \num{} & \num{} \\
+      & \num{4} & \num{1.81} & \num{2.16} & \num{0.04} & \num{0.3} \\
+      & \num{16} & \num{2.01} & \num{2.35} & \num{0.3} & \num{0.55} \\
+      & \num{28} & \num{2.13} & \num{2.29} & \num{0.55} & \num{0.55} \\
     \hline
     \multirow{3}{*}{$10^6$}
-      & \num{4} & \num{} & \num{} & \num{} & \num{} \\
-      & \num{16} & \num{} & \num{} & \num{} & \num{} \\
-      & \num{28} & \num{} & \num{} & \num{} & \num{} \\
+      & \num{4} & \num{4.26} & \num{6.81} & \num{1.79} & \num{1.8} \\
+      & \num{16} & \num{5.45} & \num{8.19} & \num{2.81} & \num{3.51} \\
+      & \num{28} & \num{6.15} & \num{8.72} & \num{3.59} & \num{3.92} \\
     \hline
     \multirow{3}{*}{$10^7$}
-      & \num{4} & \num{} & \num{} & \num{} & \num{} \\
-      & \num{16} & \num{} & \num{} & \num{} & \num{} \\
-      & \num{28} & \num{} & \num{} & \num{} & \num{} \\
+      & \num{4} & \num{31.8} & \num{64.69} & \num{14.3} & \num{22.29} \\
+      & \num{16} & \num{41.4} & \num{70.86} & \num{22.7} & \num{30.64} \\
+      & \num{28} & \num{45.27} & \num{75.2} & \num{25.75} & \num{34.11} \\
   \end{tabular}
 \end{table}
 
@@ -518,11 +526,5 @@ Još jedna stvar koja bi mogla ubrzati izgradnju te smanjiti potrošnju memorije
 
 \bibliography{literature}
 \bibliographystyle{fer}
-
-\begin{sazetak}
-Sazetak rada
-
-\kljucnerijeci{Velvet}
-\end{sazetak}
 
 \end{document}

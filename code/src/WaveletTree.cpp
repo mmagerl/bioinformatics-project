@@ -1,3 +1,7 @@
+/*
+ * Written by Matija Milišić and Mateo Šimonović
+ */
+
 #include <map>
 #include <set>
 #include <vector>
