@@ -55,7 +55,7 @@ U ovom radu opisana je implementacija stabla valića\citep{alexbowe}  koje se ko
 
 Brza implementacija metoda $rank$ i $select$ znače da se stablo valića može iskoristiti za pronalaženje podudarajućih nizova, odnosno podnizova. 
 
-U poglavlju \ref{sec:rrr} opisana je RRR struktura i dan je primjer upita koji se nad tom strukturom mogu zvati. U poglavlju \ref{sec:wavelet-tree} opisano je stablo valića te je također dan primjer upita koji se nad tom strukturom mogu zvati. U poglavlju \ref{sec:results} napisana su mjerenja koja su pokrenuta nad sintetičkim ulazima te nad stvarnim ulazima koji predstavljaju genome nekih virusa, bakterija i organizama. Također napravljena je usporedba s implementacijom studenata s kolegija Bioinformatika akademske godine 2015/2016. 
+U poglavlju \ref{sec:rrr} opisana je RRR struktura i dan je primjer upita koji se nad tom strukturom mogu zvati. U poglavlju \ref{sec:wavelet-tree} opisano je stablo valića te je također dan primjer upita koji se nad tom strukturom mogu zvati. U poglavlju \ref{sec:results} napisana su mjerenja koja su pokrenuta nad sintetičkim ulazima te nad stvarnim ulazima koji predstavljaju genome nekih virusa, bakterija i organizama. Također napravljena je usporedba s implementacijom studenata s kolegija Bioinformatika akademske godine 2015/2016. U poglavlju \ref{sec:implementation} opisani su neki detalji implementacije projekta u jeziku C++.
 
 U zadnjem \ref{sec:conclusion}. poglavlju dan je kratki zaključak o implementaciji i rezultatima ispitivanja rješenja te je dano nekoliko primjera gdje bi se, u budućnosti, mogla napraviti poboljšanja u odnosu na ovu implementaciju. 
 
@@ -276,6 +276,30 @@ U idućim poglavljima dani su opisi
 \end{table}
 
 
+
+\chapter{Implementacija}
+\label{sec:implementation}
+Implementacija stabla valića i RRR strukture napisana je u programskom jeziku C++. Pomoćne skripte koje služe za generiranje sintetičkih testnih primjera i za obradu stvarnih podataka napisane su u jeziku Python. 
+
+Dvije glavne datoteke u kojima je napisan kod su u direktoriju \texttt{src}:
+\begin{enumerate}
+	\item \texttt{RRR.cpp}. U ovoj datoteci napisane su implementacije metoda RRR strukture. Metode razreda RRR definirane su u \textit{header} datoteci \texttt{/include/RRR.h}. Konstruktor razreda RRR prima kao parametar vektor boolean vrijednosti. U konstruktoru se prvo gradi lookup tablica, a na temelju dobivenog vektora konstruira se par (klasa, pomak) za svaki blok u ulaznom nizu. Metode $rank$, $select$ i $access$ implementirane su kao što je opisano u poglavlju \ref{sec:rrr}.
+	
+	\item \texttt{WaveletTree.cpp}. U ovoj datoteci napisane su implementacije metoda stabla valića. Metode razreda \texttt{WaveletTree} definirane su u \textit{header} datoteci \texttt{/include/WaveletTree.h}. U istim datotekama definiran je i razred \texttt{WaveletTreeNode} koji predstavlja jedan čvor u stablu valića. Taj čvor koristi razred \texttt{RRR} kako bi odgovarao na tražene upite. U konstruktoru razreda \texttt{WaveletTree} rekurzivno se gradi struktura pomoću čvorova. Čvor u svom konstruktoru generira druge čvorove sve dok je veličina abecede veća od 2. Metode $rank$, $select$ i $access$ implementirane su kao što je opisano u poglavlju \ref{sec:wavelet-tree}.
+\end{enumerate}
+
+U direktoriju \texttt{unittest} napisani su \textit{Unit} testovi za razrede \texttt{RRR} i \texttt{WaveletTree}. Testovi se pokreću drugačije ovisno o operacijskom sustavu. Testovi su napisani pomoću okoline za testiranje \textit{googletest}. Moguće je da prilikom kloniranja repozitorija neće biti moguće automatski pokrenuti testove, već  će biti potrebno preuzeti i pokrenuti neke skripte dostupne na stranicama \textit{googletest}-a:
+\begin{enumerate}
+	\item \texttt{git clone https://github.com/google/googletest}
+	\item \texttt{cd googletest}
+	\item \texttt{cmake googletest \&\& make}
+	\item \texttt{cp libgtest.a PROJECT/code/bin/ubuntu}
+\end{enumerate}
+
+Za pokretanje testova služi skripta \texttt{bin/<OS>/run\_tests.sh}.
+
+U direktoriju \texttt{other} nalaze se izvorni kodovi implementacije studenata akademske godine 2015/2016\citep{bio-2016} koji su preuzeti s njihovog repozitorija, a služe vremenskoj i memorijskoj usporedbi rješenja.
+ 
 \chapter{Zaključak}
 \label{sec:conclusion}
 
