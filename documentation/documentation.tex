@@ -42,7 +42,7 @@
 
 \title{Izgradnja binarnog stabla valića kao RRR strukture}
 \author{Mislav Magerl, Matija Milišić, Mateo Šimonović}
-\voditelj{izv. prof. dr. sc. Mile Šikić}
+\voditelj{doc. dr. sc. Mirjana Domazet-Lošo}
 
 \maketitle
 
@@ -203,6 +203,7 @@ Metoda $access(i)$ vraća koji se znak nalazi na danoj poziciji - nula ili jedan
 Tražimo na primjeru slike \ref{fig:rrr} $access_1(25)$. Ulazni niz, blokovi i superblokovi su 0-indeksirani. Parametri RRR-a su $b=5$ i $f=2$. Rezultat je $rank_1(25)-rank_1(24)$ što je jednako $1$.
 
 \chapter{Stablo valića}
+\label{sec:wavelet-tree}
 Stablo valića \engl{Wavelet Tree} je struktura podataka koja omogućava efikasno spremanje niza znakova nad proizvoljnom abecedom u memoriji računala i efikasnog odgovaranja na određena pitanja nad istim. Iako originalno predstavljeno od tvoraca strukture Grossija, Gupte i Vittera \citep{Grossi:2003:HET:644108.644250} za rad isključivo nad nizovima, stablo valića se pokazalo kao vrlo efikasna struktura podataka za predstavljanje permutacija i rešetke točaka i pronašlo je primjenu u raznim područjima, od obrade i indeksiranja teksta, do teorije grafova i geometrije. \citep{navarro-wavelet-trees-for-all}
 
 Stablo valića je podatkovna struktura koja ulazni niz znakova kodira kao stablo binarnih nizova. Na taj je način ostvarena sažeta struktura podataka \engl{succinct data structure}, odnosno to je struktura podataka koja koristi memorije blisko donjoj granici definiranoj teorijom informacije (konkretno, $N + o(N)$ bitova memorije gdje je $N$ teorijski optimum za pohranu podataka), a i dalje nudi efikasnu implementaciju odgovora na razne upite o sadržanim podacima.
@@ -260,18 +261,208 @@ Stablo valića omogućava efikasno izvođenje tri osnovne operacije:
 \end{enumerate}
 
 
-U idućim poglavljima dani su opisi 
+U idućim poglavljima dani su opisi svake od navedenih operacija, njihov pseudokod te je pokazan primjer njihovog izvođenja nad stablom izgrađenim u poglavlju \ref{sec:izgradnja-stabla}.
+
+\subsection{Rank}
+
+\begin{algorithm}[H]
+ \caption{Pseudokod $rank$ operacije nad stablom valića}
+ \Fn{\texttt{rank($i$, $c$)}}{
+  	\texttt{trenutniČvor = korijenStabla\;
+	pozicija = i\;
+	}
+	
+	\Dok{\texttt{trenutniČvor != NULL}}{
+		\uAko{\texttt{$c \in $ trenutniČvor.desno}}{
+			\texttt{pozicija = \texttt{rank1(pozicija)} - 1\;
+			trenutniČvor = trenutniČvor.desno\;
+			}
+ 		}
+ 		\Inace {
+ 			\texttt{pozicija = \texttt{rank0(pozicija)} - 1\;
+ 			trenutniČvor = trenutniČvor.lijevo\;
+ 			}
+ 		}
+ 		\Ako{\texttt{pozicija == -1}}{
+			\textbf{izađi}\;
+ 		}
+	}
+	\Vrati \texttt{pozicija} + 1\;
+}
+\end{algorithm}
+
+\subsection{Select}
+
+\begin{algorithm}[H]
+ \caption{Pseudokod $select$ operacije nad stablom valića}
+ \Fn{\texttt{select($i$, $c$)}}{
+	\texttt{trenutniČvor = čvorZaZnak($c$)\;
+	pozicija = $i$\;
+	}
+	
+	\uAko{\texttt{k\^{o}d(trenutniČvor) == 0}}{
+		\texttt{pozicija = select0(pozicija)}\;
+ 	}
+	\Inace {
+ 		\texttt{pozicija = select1(pozicija)}\;
+ 	}
+	
+	\Dok{\texttt{trenutniČvor != korijenStabla}}{
+		\uAko{je \texttt{trenutniČvor} lijevo dijete}{
+			\texttt{pozicija = trenutniČvor.roditelj.select0(pozicija+1)}\;
+ 		}
+ 		\Inace {
+			\texttt{pozicija = trenutniČvor.roditelj.select1(pozicija+1)}\;
+ 		}
+		\texttt{trenutniČvor = trenutniČvor.roditelj\;}
+	}
+	\Vrati \texttt{pozicija\;}
+}
+\end{algorithm}
+
+
+\subsection{Access}
+
+\begin{algorithm}[H]
+ \caption{Pseudokod $access$ operacije nad stablom valića}
+ \Fn{\texttt{access($i$)}}{
+	\texttt{trenutniČvor = korijenStabla\;
+	pozicija = $i$\;
+	}
+	
+	\Dok{\texttt{trenutniČvor != NULL}}{
+		\uAko{\texttt{access(pozicija)} == 0}{
+			\texttt{pozicija = rank0(pozicija)\;
+			\Ako{\texttt{trenutniČvor.lijevo == NULL}}{
+				\Vrati prviElement($\Sigma_v$)\;
+			}
+			trenutniČvor = trenutniČvor.desno\;
+			}
+ 		}
+ 		\Inace {
+			\texttt{pozicija = rank1(pozicija)\;
+			\Ako{\texttt{trenutniČvor.lijevo == NULL}}{
+				\Vrati zadnjiElement($\Sigma_v$)\;
+			}
+			trenutniČvor = trenutniČvor.desno\;
+			}
+ 		}
+	}
+	\Vrati 0\;
+}
+\end{algorithm}
 
 
 \chapter{Rezultati}
+\label{sec:results}
 
 \begin{table}[h]
+\caption{Vrijeme izgradnje stabla i izvršavanja upita - sintetičke datoteke}
+\centering
+  \begin{tabular}{c|c|c|c|c|c|c|c|c|c}
+    $n$ & $|\Sigma|$ & \multicolumn{2}{c|}{$tc$ $(s)$} &
+    \multicolumn{2}{c|}{$rank$ $(\mu s)$} & \multicolumn{2}{c|}{$select$ $(\mu s)$} & \multicolumn{2}{c}{$access$ $(\mu s)$}\\ \hline
+    \multirow{3}{*}{$10^2$}
+      & \num{4} & \num{0.000} & \num{0.000} & \num{0.6} & \num{0.4} & \num{0.7} & \num{1.1} & \num{0.3} & \num{1.0} \\
+      & \num{16} & \num{0.000} & \num{0.000} & \num{1.0} & \num{0.6} & \num{1.4} & \num{2.1} & \num{0.7} & \num{1.8} \\
+      & \num{28} & \num{0.001} & \num{0.000} & \num{1.3} & \num{0.7} & \num{1.8} & \num{2.5} & \num{0.9} & \num{2.1} \\
+    \hline
+    \multirow{3}{*}{$10^3$}
+      & \num{4} & \num{0.001} & \num{0.001} & \num{0.5} & \num{0.5} & \num{0.9} & \num{1.4} & \num{0.4} & \num{1.4} \\
+      & \num{16} & \num{0.002} & \num{0.002} & \num{1.1} & \num{1.0} & \num{1.6} & \num{2.6} & \num{0.9} & \num{2.6} \\
+      & \num{28} & \num{0.003} & \num{0.002} & \num{1.4} & \num{1.1} & \num{2.1} & \num{3.1} & \num{1.1} & \num{3.0} \\
+    \hline
+    \multirow{3}{*}{$10^4$}
+      & \num{4} & \num{0.008} & \num{0.012} & \num{0.5} & \num{0.7} & \num{1.1} & \num{1.7} & \num{0.5} & \num{1.9} \\
+      & \num{16} & \num{0.024} & \num{0.032} & \num{1.2} & \num{1.3} & \num{2.0} & \num{3.3} & \num{1.0} & \num{3.5} \\
+      & \num{28} & \num{0.023} & \num{0.030} & \num{1.4} & \num{1.5} & \num{2.4} & \num{3.9} & \num{1.2} & \num{4.2} \\
+    \hline
+    \multirow{3}{*}{$10^5$}
+      & \num{4} & \num{0.076} & \num{0.312} & \num{0.6} & \num{0.8} & \num{1.2} & \num{2.0} & \num{0.5} & \num{2.3} \\
+      & \num{16} & \num{0.173} & \num{0.702} & \num{1.2} & \num{1.5} & \num{2.3} & \num{3.9} & \num{1.2} & \num{4.4} \\
+      & \num{28} & \num{0.224} & \num{0.759} & \num{1.6} & \num{1.8} & \num{2.9} & \num{4.6} & \num{1.4} & \num{5.1} \\
+    \hline
+    \multirow{3}{*}{$10^6$}
+      & \num{4} & \num{0.743} & \num{4.705} & \num{0.6} & \num{1.0} & \num{1.3} & \num{2.4} & \num{0.6} & \num{2.7} \\
+      & \num{16} & \num{1.718} & \num{9.843} & \num{1.4} & \num{1.8} & \num{2.6} & \num{4.6} & \num{1.4} & \num{5.2} \\
+      & \num{28} & \num{2.284} & \num{11.539} & \num{1.7} & \num{2.2} & \num{3.5} & \num{5.6} & \num{1.8} & \num{6.2} \\
+    \hline
+    \multirow{3}{*}{$10^7$}
+      & \num{4} & \num{7.391} & \num{131.879} & \num{0.8} & \num{1.2} & \num{1.7} & \num{2.9} & \num{0.9} & \num{3.4} \\
+      & \num{16} & \num{18.045} & \num{286.005} & \num{1.9} & \num{2.6} & \num{3.8} & \num{6.0} & \num{2.2} & \num{6.7} \\
+      & \num{28} & \num{22.087} & \num{327.876} & \num{2.5} & \num{3.2} & \num{4.5} & \num{7.1} & \num{2.6} & \num{7.9} \\
+  \end{tabular}
+\end{table}
+
+\begin{table}[h]
+\caption{Potrošnja memorije pri izgradnji stabla - sintetičke datoteke}
+\centering
+  \begin{tabular}{c|c|c|c|c|c}
+    $n$ & $|\Sigma|$ &
+    \multicolumn{2}{c|}{Proces $(MB)$} & \multicolumn{2}{c}{Struktura $(MB)$} \\ \hline
+    \multirow{3}{*}{$10^2$}
+      & \num{4} \\
+      & \num{16} \\
+      & \num{28} \\
+    \hline
+    \multirow{3}{*}{$10^3$}
+      & \num{4} \\
+      & \num{16} \\
+      & \num{28} \\
+    \hline
+    \multirow{3}{*}{$10^4$}
+      & \num{4} \\
+      & \num{16} \\
+      & \num{28} \\
+    \hline
+    \multirow{3}{*}{$10^5$}
+      & \num{4} \\
+      & \num{16} \\
+      & \num{28} \\
+    \hline
+    \multirow{3}{*}{$10^6$}
+      & \num{4} \\
+      & \num{16} \\
+      & \num{28} \\
+    \hline
+    \multirow{3}{*}{$10^7$}
+      & \num{4} \\
+      & \num{16} \\
+      & \num{28} \\
+  \end{tabular}
+\end{table}
+
+\begin{table}[h]
+\caption{Vrijeme izgradnje stabla i izvršavanja upita - FASTA datoteke}
 \centering
   \begin{tabular}{c|c|c|c|c|c|c|c|c|c|c}
     \specialcell{skup\\podataka} & $n$ & $|\Sigma|$ & \multicolumn{2}{c|}{$tc$ $(s)$} &
     \multicolumn{2}{c|}{$rank$ $(\mu s)$} & \multicolumn{2}{c|}{$select$ $(\mu s)$} & \multicolumn{2}{c}{$access$ $(\mu s)$}\\ \hline
+    HPV & \\
+    HIV & \\
+    Camelpox & \\
+    Tuberculosis & \\
+    Salmonella & \\
+    Coli & \\
     Human21 & \num{33543332} & \num{5} & \num{33} & \num{532} & \num{1.5} & \num{1.9} & \num{3.6} & \num{15.8} & \num{1.6} & \num{4.6} \\
-    Human21 & \num{33543332} & \num{5} & \num{33} & \num{0.001} & \num{1.5} & \num{1.9} & \num{3.6} & \num{15.8} & \num{1.6} & \num{4.6} \\
+    Human3 & \\
+  \end{tabular}
+\end{table}
+
+\begin{table}[h]
+\caption{Potrošnja memorije pri izgradnji stabla - FASTA datoteke}
+\centering
+  \begin{tabular}{c|c|c|c|c|c|c}
+    \specialcell{skup\\podataka} & $n$ & $|\Sigma|$ &
+    \multicolumn{2}{c|}{Proces $(MB)$} & \multicolumn{2}{c}{Struktura $(MB)$} \\ \hline
+    HPV & \num{0} & \num{0} & \num{1.61} & \num{1.65} & \num{0.2} & \num{0.2} \\
+    HIV & \num{0} & \num{0} & \num{1.63} & \num{1.66} & \num{0.2} & \num{0.2} \\
+    Camelpox & \num{0} & \num{0} & \num{2.13} & \num{2.54} & \num{0.3} & \num{0.41} \\
+    Tuberculosis & \num{0} & \num{0} & \num{14.82} & \num{25.56} & \num{6.78} & \num{7.56} \\
+    Salmonella & \num{0} & \num{0} & \num{26.34} & \num{46.38} & \num{11.14} & \num{9.11} \\
+    Coli & \num{0} & \num{0} & \num{25.84} & \num{41.52} & \num{14.19} & \num{12.59} \\
+    Human21 & \num{33543332} & \num{5} & \num{131.57} & \num{238.55} & \num{50.38} & \num{99.05} \\
+    Human3 & \num{} & \num{} & \num{782.22} & \num{} & \num{190.16} & \num{} \\
   \end{tabular}
 \end{table}
 
