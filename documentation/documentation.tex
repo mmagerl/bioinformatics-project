@@ -356,8 +356,18 @@ U idućim poglavljima dani su opisi svake od navedenih operacija, njihov pseudok
 \chapter{Rezultati}
 \label{sec:results}
 
+U ovom poglavlju prikazane su vremenska i memorijska karakteristika stabla valića na sintetičkim i 
+stvarnim skupovima podataka. U tu svrhu napravljena su 24 sintetička skupa podataka s veličinama
+od $10^2$ do $10^7$ znakova i veličinama abecede $4$, $16$ i $28$. Stvarni skupovi podataka preuzeti 
+su sa stranice \url{https://www.ncbi.nlm.nih.gov/} i uključuju zapise genoma nekih virusa, bakterija 
+i organizama. 
+
+Napravljena evaluacija radila je usporedbu između ove implementacije i implementacije studenata
+iz akademske godine 2015/2016. Tablica \ref{table:sin_time} prikazuje 
+
 \begin{table}[h]
 \caption{Vrijeme izgradnje stabla i izvršavanja upita - sintetičke datoteke}
+\label{table:sin_time}
 \centering
   \begin{tabular}{c|c|c|c|c|c|c|c|c|c}
     $n$ & $|\Sigma|$ & \multicolumn{2}{c|}{$tc$ $(s)$} &
@@ -401,34 +411,34 @@ U idućim poglavljima dani su opisi svake od navedenih operacija, njihov pseudok
     $n$ & $|\Sigma|$ &
     \multicolumn{2}{c|}{Proces $(MB)$} & \multicolumn{2}{c}{Struktura $(MB)$} \\ \hline
     \multirow{3}{*}{$10^2$}
-      & \num{4} & \num{} & \num{} & \num{} & \num{} \\
-      & \num{16} & \num{} & \num{} & \num{} & \num{} \\
-      & \num{28} & \num{} & \num{} & \num{} & \num{} \\
+      & \num{4} & \num{1.57} & \num{1.59} & \num{0.18} & \num{0.18} \\
+      & \num{16} & \num{1.59} & \num{1.59} & \num{0.18} & \num{0.18} \\
+      & \num{28} & \num{1.6} & \num{1.59} & \num{0.18} & \num{0.18} \\
     \hline
     \multirow{3}{*}{$10^3$}
-      & \num{4} & \num{} & \num{} & \num{} & \num{} \\
-      & \num{16} & \num{} & \num{} & \num{} & \num{} \\
-      & \num{28} & \num{} & \num{} & \num{} & \num{} \\
+      & \num{4} & \num{1.58} & \num{1.6} & \num{0.19} & \num{0.19} \\
+      & \num{16} & \num{1.6} & \num{1.6} & \num{0.19} & \num{0.19} \\
+      & \num{28} & \num{1.63} & \num{1.6} & \num{0.19} & \num{0.19} \\
     \hline
     \multirow{3}{*}{$10^4$}
-      & \num{4} & \num{} & \num{} & \num{} & \num{} \\
-      & \num{16} & \num{} & \num{} & \num{} & \num{} \\
-      & \num{28} & \num{} & \num{} & \num{} & \num{} \\
+      & \num{4} & \num{1.62} & \num{1.67} & \num{0.2} & \num{0.2} \\
+      & \num{16} & \num{1.68} & \num{1.68} & \num{0.2} & \num{0.2} \\
+      & \num{28} & \num{1.72} & \num{1.69} & \num{0.2} & \num{0.2} \\
     \hline
     \multirow{3}{*}{$10^5$}
-      & \num{4} & \num{} & \num{} & \num{} & \num{} \\
-      & \num{16} & \num{} & \num{} & \num{} & \num{} \\
-      & \num{28} & \num{} & \num{} & \num{} & \num{} \\
+      & \num{4} & \num{1.81} & \num{2.16} & \num{0.04} & \num{0.3} \\
+      & \num{16} & \num{2.01} & \num{2.35} & \num{0.3} & \num{0.55} \\
+      & \num{28} & \num{2.13} & \num{2.29} & \num{0.55} & \num{0.55} \\
     \hline
     \multirow{3}{*}{$10^6$}
-      & \num{4} & \num{} & \num{} & \num{} & \num{} \\
-      & \num{16} & \num{} & \num{} & \num{} & \num{} \\
-      & \num{28} & \num{} & \num{} & \num{} & \num{} \\
+      & \num{4} & \num{4.26} & \num{6.81} & \num{1.79} & \num{1.8} \\
+      & \num{16} & \num{5.45} & \num{8.19} & \num{2.81} & \num{3.51} \\
+      & \num{28} & \num{6.15} & \num{8.72} & \num{3.59} & \num{3.92} \\
     \hline
     \multirow{3}{*}{$10^7$}
-      & \num{4} & \num{} & \num{} & \num{} & \num{} \\
-      & \num{16} & \num{} & \num{} & \num{} & \num{} \\
-      & \num{28} & \num{} & \num{} & \num{} & \num{} \\
+      & \num{4} & \num{31.8} & \num{64.69} & \num{14.3} & \num{22.29} \\
+      & \num{16} & \num{41.4} & \num{70.86} & \num{22.7} & \num{30.64} \\
+      & \num{28} & \num{45.27} & \num{75.2} & \num{25.75} & \num{34.11} \\
   \end{tabular}
 \end{table}
 
