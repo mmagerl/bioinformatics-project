@@ -262,7 +262,7 @@ Stablo valića omogućava efikasno izvođenje tri osnovne operacije:
 \end{enumerate}
 
 
-U idućim poglavljima dani su opisi svake od navedenih operacija, njihov pseudokod te je pokazan primjer njihovog izvođenja nad stablom izgrađenim u poglavlju \ref{sec:izgradnja-stabla}. Važno je napomenuti nekoliko implementacijskih detalja iz kojih slijede pseudokodovi u narednim poglavljima. Svaki je čvor u grafu definiran strukturom koja u sebi sadrži reference na djecu kojima se u nastavku pristupa sintaksom \texttt{čvor.lijevo} i \texttt{čvor.desno} te referencu na čvor roditelj kojem se pristupa s \texttt{čvor.roditelj}. Svi indeksi počinju od nule.
+U idućim poglavljima dani su opisi svake od navedenih operacija te njihov pseudokod zajedno s opisom. Važno je napomenuti nekoliko implementacijskih detalja iz kojih slijede pseudokodovi u narednim poglavljima. Svaki je čvor u grafu definiran strukturom koja u sebi sadrži reference na djecu kojima se u nastavku pristupa sintaksom \texttt{čvor.lijevo} i \texttt{čvor.desno} te referencu na čvor roditelj kojem se pristupa s \texttt{čvor.roditelj}. Svi indeksi počinju od nule.
 
 \subsection{Rank}
 Pseudokod operacije $rank(i, c)$ dan je u nastavku u algoritmu \ref{alg:wt-rank}. To je operacija nad izgrađenim stablom valića koja odgovara na pitanje koliko je pojavljivanja znaka $c$ do $i$-te pozicije u ulaznom nizu znakova. Operacije \texttt{rank1} i \texttt{rank0} koje se pojavljuju u pseudokodu su operacije nad binarnim vektorom kodova i odgovaraju operacijama definiranim u poglavlju \ref{subsec:rank}.
