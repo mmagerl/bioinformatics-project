@@ -42,7 +42,7 @@
 
 \title{Izgradnja binarnog stabla valića kao RRR strukture}
 \author{Mislav Magerl, Matija Milišić, Mateo Šimonović}
-\voditelj{izv. prof. dr. sc. Mile Šikić}
+\voditelj{doc. dr. sc. Mirjana Domazet-Lošo}
 
 \maketitle
 
@@ -55,7 +55,7 @@ U ovom radu opisana je implementacija stabla valića\citep{alexbowe}  koje se ko
 
 Brza implementacija metoda $rank$ i $select$ znače da se stablo valića može iskoristiti za pronalaženje podudarajućih nizova, odnosno podnizova. 
 
-U poglavlju \ref{sec:rrr} opisana je RRR struktura i dan je primjer upita koji se nad tom strukturom mogu zvati. U poglavlju \ref{sec:wavelet-tree} opisano je stablo valića te je također dan primjer upita koji se nad tom strukturom mogu zvati. U poglavlju \ref{sec:results} napisana su mjerenja koja su pokrenuta nad sintetičkim ulazima te nad stvarnim ulazima koji predstavljaju genome nekih virusa, bakterija i organizama. Također napravljena je usporedba s implementacijom studenata s kolegija Bioinformatika akademske godine 2015/2016. 
+U poglavlju \ref{sec:rrr} opisana je RRR struktura i dan je primjer upita koji se nad tom strukturom mogu zvati. U poglavlju \ref{sec:wavelet-tree} opisano je stablo valića te je također dan primjer upita koji se nad tom strukturom mogu zvati. U poglavlju \ref{sec:results} napisana su mjerenja koja su pokrenuta nad sintetičkim ulazima te nad stvarnim ulazima koji predstavljaju genome nekih virusa, bakterija i organizama. Također napravljena je usporedba s implementacijom studenata s kolegija Bioinformatika akademske godine 2015/2016. U poglavlju \ref{sec:implementation} opisani su neki detalji implementacije projekta u jeziku C++.
 
 U zadnjem \ref{sec:conclusion}. poglavlju dan je kratki zaključak o implementaciji i rezultatima ispitivanja rješenja te je dano nekoliko primjera gdje bi se, u budućnosti, mogla napraviti poboljšanja u odnosu na ovu implementaciju. 
 
@@ -203,6 +203,7 @@ Metoda $access(i)$ vraća koji se znak nalazi na danoj poziciji - nula ili jedan
 Tražimo na primjeru slike \ref{fig:rrr} $access_1(25)$. Ulazni niz, blokovi i superblokovi su 0-indeksirani. Parametri RRR-a su $b=5$ i $f=2$. Rezultat je $rank_1(25)-rank_1(24)$ što je jednako $1$.
 
 \chapter{Stablo valića}
+\label{sec:wavelet-tree}
 Stablo valića \engl{Wavelet Tree} je struktura podataka koja omogućava efikasno spremanje niza znakova nad proizvoljnom abecedom u memoriji računala i efikasnog odgovaranja na određena pitanja nad istim. Iako originalno predstavljeno od tvoraca strukture Grossija, Gupte i Vittera \citep{Grossi:2003:HET:644108.644250} za rad isključivo nad nizovima, stablo valića se pokazalo kao vrlo efikasna struktura podataka za predstavljanje permutacija i rešetke točaka i pronašlo je primjenu u raznim područjima, od obrade i indeksiranja teksta, do teorije grafova i geometrije. \citep{navarro-wavelet-trees-for-all}
 
 Stablo valića je podatkovna struktura koja ulazni niz znakova kodira kao stablo binarnih nizova. Na taj je način ostvarena sažeta struktura podataka \engl{succinct data structure}, odnosno to je struktura podataka koja koristi memorije blisko donjoj granici definiranoj teorijom informacije (konkretno, $N + o(N)$ bitova memorije gdje je $N$ teorijski optimum za pohranu podataka), a i dalje nudi efikasnu implementaciju odgovora na razne upite o sadržanim podacima.
@@ -260,7 +261,96 @@ Stablo valića omogućava efikasno izvođenje tri osnovne operacije:
 \end{enumerate}
 
 
-U idućim poglavljima dani su opisi 
+U idućim poglavljima dani su opisi svake od navedenih operacija, njihov pseudokod te je pokazan primjer njihovog izvođenja nad stablom izgrađenim u poglavlju \ref{sec:izgradnja-stabla}.
+
+\subsection{Rank}
+
+\begin{algorithm}[H]
+ \caption{Pseudokod $rank$ operacije nad stablom valića}
+ \Fn{\texttt{rank($i$, $c$)}}{
+  	\texttt{trenutniČvor = korijenStabla\;
+	pozicija = i\;
+	}
+	
+	\Dok{\texttt{trenutniČvor != NULL}}{
+		\uAko{\texttt{$c \in $ trenutniČvor.desno}}{
+			\texttt{pozicija = \texttt{rank1(pozicija)} - 1\;
+			trenutniČvor = trenutniČvor.desno\;
+			}
+ 		}
+ 		\Inace {
+ 			\texttt{pozicija = \texttt{rank0(pozicija)} - 1\;
+ 			trenutniČvor = trenutniČvor.lijevo\;
+ 			}
+ 		}
+ 		\Ako{\texttt{pozicija == -1}}{
+			\textbf{izađi}\;
+ 		}
+	}
+	\Vrati \texttt{pozicija} + 1\;
+}
+\end{algorithm}
+
+\subsection{Select}
+
+\begin{algorithm}[H]
+ \caption{Pseudokod $select$ operacije nad stablom valića}
+ \Fn{\texttt{select($i$, $c$)}}{
+	\texttt{trenutniČvor = čvorZaZnak($c$)\;
+	pozicija = $i$\;
+	}
+	
+	\uAko{\texttt{k\^{o}d(trenutniČvor) == 0}}{
+		\texttt{pozicija = select0(pozicija)}\;
+ 	}
+	\Inace {
+ 		\texttt{pozicija = select1(pozicija)}\;
+ 	}
+	
+	\Dok{\texttt{trenutniČvor != korijenStabla}}{
+		\uAko{je \texttt{trenutniČvor} lijevo dijete}{
+			\texttt{pozicija = trenutniČvor.roditelj.select0(pozicija+1)}\;
+ 		}
+ 		\Inace {
+			\texttt{pozicija = trenutniČvor.roditelj.select1(pozicija+1)}\;
+ 		}
+		\texttt{trenutniČvor = trenutniČvor.roditelj\;}
+	}
+	\Vrati \texttt{pozicija\;}
+}
+\end{algorithm}
+
+
+\subsection{Access}
+
+\begin{algorithm}[H]
+ \caption{Pseudokod $access$ operacije nad stablom valića}
+ \Fn{\texttt{access($i$)}}{
+	\texttt{trenutniČvor = korijenStabla\;
+	pozicija = $i$\;
+	}
+	
+	\Dok{\texttt{trenutniČvor != NULL}}{
+		\uAko{\texttt{access(pozicija)} == 0}{
+			\texttt{pozicija = rank0(pozicija)\;
+			\Ako{\texttt{trenutniČvor.lijevo == NULL}}{
+				\Vrati prviElement($\Sigma_v$)\;
+			}
+			trenutniČvor = trenutniČvor.desno\;
+			}
+ 		}
+ 		\Inace {
+			\texttt{pozicija = rank1(pozicija)\;
+			\Ako{\texttt{trenutniČvor.lijevo == NULL}}{
+				\Vrati zadnjiElement($\Sigma_v$)\;
+			}
+			trenutniČvor = trenutniČvor.desno\;
+			}
+ 		}
+	}
+	\Vrati 0\;
+}
+\end{algorithm}
 
 
 \chapter{Rezultati}
@@ -377,6 +467,30 @@ U idućim poglavljima dani su opisi
 \end{table}
 
 
+
+\chapter{Implementacija}
+\label{sec:implementation}
+Implementacija stabla valića i RRR strukture napisana je u programskom jeziku C++. Pomoćne skripte koje služe za generiranje sintetičkih testnih primjera i za obradu stvarnih podataka napisane su u jeziku Python. 
+
+Dvije glavne datoteke u kojima je napisan kod su u direktoriju \texttt{src}:
+\begin{enumerate}
+	\item \texttt{RRR.cpp}. U ovoj datoteci napisane su implementacije metoda RRR strukture. Metode razreda RRR definirane su u \textit{header} datoteci \texttt{/include/RRR.h}. Konstruktor razreda RRR prima kao parametar vektor boolean vrijednosti. U konstruktoru se prvo gradi lookup tablica, a na temelju dobivenog vektora konstruira se par (klasa, pomak) za svaki blok u ulaznom nizu. Metode $rank$, $select$ i $access$ implementirane su kao što je opisano u poglavlju \ref{sec:rrr}.
+	
+	\item \texttt{WaveletTree.cpp}. U ovoj datoteci napisane su implementacije metoda stabla valića. Metode razreda \texttt{WaveletTree} definirane su u \textit{header} datoteci \texttt{/include/WaveletTree.h}. U istim datotekama definiran je i razred \texttt{WaveletTreeNode} koji predstavlja jedan čvor u stablu valića. Taj čvor koristi razred \texttt{RRR} kako bi odgovarao na tražene upite. U konstruktoru razreda \texttt{WaveletTree} rekurzivno se gradi struktura pomoću čvorova. Čvor u svom konstruktoru generira druge čvorove sve dok je veličina abecede veća od 2. Metode $rank$, $select$ i $access$ implementirane su kao što je opisano u poglavlju \ref{sec:wavelet-tree}.
+\end{enumerate}
+
+U direktoriju \texttt{unittest} napisani su \textit{Unit} testovi za razrede \texttt{RRR} i \texttt{WaveletTree}. Testovi se pokreću drugačije ovisno o operacijskom sustavu. Testovi su napisani pomoću okoline za testiranje \textit{googletest}. Moguće je da prilikom kloniranja repozitorija neće biti moguće automatski pokrenuti testove, već  će biti potrebno preuzeti i pokrenuti neke skripte dostupne na stranicama \textit{googletest}-a:
+\begin{enumerate}
+	\item \texttt{git clone https://github.com/google/googletest}
+	\item \texttt{cd googletest}
+	\item \texttt{cmake googletest \&\& make}
+	\item \texttt{cp libgtest.a PROJECT/code/bin/ubuntu}
+\end{enumerate}
+
+Za pokretanje testova služi skripta \texttt{bin/<OS>/run\_tests.sh}.
+
+U direktoriju \texttt{other} nalaze se izvorni kodovi implementacije studenata akademske godine 2015/2016\citep{bio-2016} koji su preuzeti s njihovog repozitorija, a služe vremenskoj i memorijskoj usporedbi rješenja.
+ 
 \chapter{Zaključak}
 \label{sec:conclusion}
 
