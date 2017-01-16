@@ -12,7 +12,9 @@
 
 using namespace std;
 
+const int M = 1000000;
 const int N_QUERY = 1000000;
+const int N_BRUTE_QUERY = 100;
 
 vector<int> positions;
 vector<int> counts;
@@ -48,6 +50,11 @@ void prepare(string& input) {
     chars.push_back(c);
     counts.push_back(1+rand()%charToCount[c]);
   }
+
+  printf("Dataset info\n");
+  printf("n = %d\n", n);
+  printf("m = %d\n", (int)lChars.size());
+  printf("\n");
 }
 
 void testConstruction(string& input) {
@@ -97,7 +104,7 @@ void testRank(bool testEquality = false) {
     rank = vt->rank(positions[i], chars[i]);
   }
   eTime = clock();
-  cout << "mWT = " << double(eTime - sTime) / CLOCKS_PER_SEC * 1000000 / N_QUERY << endl;
+  cout << "mWT = " << double(eTime - sTime) / CLOCKS_PER_SEC * M / N_QUERY << endl;
 
   // other solution
   sTime = clock();
@@ -105,15 +112,15 @@ void testRank(bool testEquality = false) {
     rank = ovt->rank(chars[i], positions[i]);
   }
   eTime = clock();
-  cout << "oWT = " << double(eTime - sTime) / CLOCKS_PER_SEC * 1000000 / N_QUERY << endl;
+  cout << "oWT = " << double(eTime - sTime) / CLOCKS_PER_SEC * M / N_QUERY << endl;
 
   // brute solution
   sTime = clock();
-  for (int i = 0; i < 1000; i++){
+  for (int i = 0; i < N_BRUTE_QUERY; i++){
     rank = brute->rank(positions[i], chars[i]);
   }
   eTime = clock();
-  cout << "BRT = " << double(eTime - sTime) / CLOCKS_PER_SEC * 1000 << endl;
+  cout << "BRT = " << double(eTime - sTime) / CLOCKS_PER_SEC * M / N_BRUTE_QUERY << endl;
 
   cout << endl;
 }
@@ -145,7 +152,7 @@ void testSelect(bool testEquality = false) {
     select = vt->select(counts[i], chars[i]);
   }
   eTime = clock();
-  cout << "mWT = " << double(eTime - sTime) / CLOCKS_PER_SEC * 1000000 / N_QUERY << endl;
+  cout << "mWT = " << double(eTime - sTime) / CLOCKS_PER_SEC * M / N_QUERY << endl;
 
   // other solution
   sTime = clock();
@@ -153,15 +160,15 @@ void testSelect(bool testEquality = false) {
     select = ovt->select(chars[i], counts[i]);
   }
   eTime = clock();
-  cout << "oWT = " << double(eTime - sTime) / CLOCKS_PER_SEC * 1000000 / N_QUERY << endl;
+  cout << "oWT = " << double(eTime - sTime) / CLOCKS_PER_SEC * M / N_QUERY << endl;
 
   // brute solution
   sTime = clock();
-  for (int i = 0; i < 1000; i++){
+  for (int i = 0; i < N_BRUTE_QUERY; i++){
     select = brute->select(counts[i], chars[i]);
   }
   eTime = clock();
-  cout << "BRT = " << double(eTime - sTime) / CLOCKS_PER_SEC * 1000 << endl;
+  cout << "BRT = " << double(eTime - sTime) / CLOCKS_PER_SEC * M / N_BRUTE_QUERY << endl;
 
   cout << endl;
 }
@@ -193,7 +200,7 @@ void testAccess(bool testEquality = false) {
     access = vt->access(pos);
   }
   eTime = clock();
-  cout << "mWT = " << double(eTime - sTime) / CLOCKS_PER_SEC * 1000000 / N_QUERY << endl;
+  cout << "mWT = " << double(eTime - sTime) / CLOCKS_PER_SEC * M / N_QUERY << endl;
 
   // other solution
   sTime = clock();
@@ -201,15 +208,15 @@ void testAccess(bool testEquality = false) {
     access = ovt->access(pos);
   }
   eTime = clock();
-  cout << "oWT = " << double(eTime - sTime) / CLOCKS_PER_SEC * 1000000 / N_QUERY << endl;
+  cout << "oWT = " << double(eTime - sTime) / CLOCKS_PER_SEC * M / N_QUERY << endl;
 
   // brute solution
   sTime = clock();
-  for (int i = 0; i < 100; i++){
+  for (int i = 0; i < N_BRUTE_QUERY; i++){
     access = brute->access(positions[i]);
   }
   eTime = clock();
-  cout << "BRT = " << double(eTime - sTime) / CLOCKS_PER_SEC * 10000 << endl;
+  cout << "BRT = " << double(eTime - sTime) / CLOCKS_PER_SEC * M / N_BRUTE_QUERY << endl;
 
   cout << endl;
 }
