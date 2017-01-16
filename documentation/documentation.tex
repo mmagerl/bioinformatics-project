@@ -195,12 +195,65 @@ Metoda $access(i)$ vraća koji se znak nalazi na danoj poziciji - nula ili jedan
 Tražimo na primjeru slike \ref{fig:rrr} $access_1(25)$. Ulazni niz, blokovi i superblokovi su 0-indeksirani. Parametri RRR-a su $b=5$ i $f=2$. Rezultat je $rank_1(25)-rank_1(24)$ što je jednako $1$.
 
 \chapter{Stablo valića}
+Stablo valića \engl{Wavelet Tree} je struktura podataka koja omogućava efikasno spremanje niza znakova nad proizvoljnom abecedom u memoriji računala i efikasnog odgovaranja na određena pitanja nad istim. Iako originalno predstavljeno od tvoraca strukture Grossija, Gupte i Vittera \citep{Grossi:2003:HET:644108.644250} za rad isključivo nad nizovima, stablo valića se pokazalo kao vrlo efikasna struktura podataka za predstavljanje permutacija i rešetke točaka i pronašlo je primjenu u raznim područjima, od obrade i indeksiranja teksta, do teorije grafova i geometrije. \citep{navarro-wavelet-trees-for-all}
+
+Stablo valića je podatkovna struktura koja ulazni niz znakova kodira kao stablo binarnih nizova. Na taj je način ostvarena sažeta struktura podataka \engl{succinct data structure}, odnosno to je struktura podataka koja koristi memorije blisko donjoj granici definiranoj teorijom informacije (konkretno, $N + o(N)$ bitova memorije gdje je $N$ teorijski optimum za pohranu podataka), a i dalje nudi efikasnu implementaciju odgovora na razne upite o sadržanim podacima.
+
+
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=\textwidth]{img/wavelet_tree_example.png}
 	\caption{Stablo valića za ulazni niz "Bioinformatika je divan kolegij"}
 	\label{fig:wavelet-tree-example}
 \end{figure}
+
+
+Na slici \ref{fig:wavelet-tree-example} prikazan je primjer izgrađenog stabla valića za ulazni niz znakova “Bioinformatika je divan kolegij”. Stablo je binarno i balansirano, a gradi se rekurzivnim postupkom počevši od korijena stabla koji predstavlja cijeli ulazni niz pa do listova koji predstavljaju jedinstveno označene znakove. U poglavlju \ref{sec:izgradnja-stabla} detaljnije je opisan postupak izgradnje stabla na danom primjeru. U praksi postoje dvije moguće implementacije izgradnje stabla valića: prva koja gradi stablo dok svako slovo u ulaznoj abecedi ne postane list s jedinstvenim binarnim kodom, a druga koja gradnju stabla zaustavi kada čvor sadrži samo dva različita znaka jer ih je tada binarnim nizom već moguće razlikovati. U ovom je radu korištena druga implementacija radi uštede memorije zbog nepotrebnog spremanja dodatne dubine stabla. Važno je primjetiti da o duljini ulaznog niza ovisi duljina vektora bitova u svakom čvoru stabla, dok dubina stabla ovisi samo o veličini abecede ulaznog niza. Također, bitno je napomenuti da su znakovi u čvorovima prikazani radi razumijevanja postupka izgradnje stabla, ali se u strukturi ne pamte. Stablo valića omogućuje efikasnu implementaciju operacija koje se u literaturi pojavljuju kao rank, select i access, a njihova važnost i implementacijski detalji objašnjeni su u poglavlju \ref{sec:operacije-nad-stablom}.
+
+\section{Izgradnja stabla}
+\label{sec:izgradnja-stabla}
+
+Stablo valića gradi se rekurzivnim postupkom koji kreće od niza znakova $\mathnormal{S} = s_1s_2 \dots s_n$, uz $s_i \in \Sigma$, gdje je $\Sigma$ abeceda \engl{alphabet} ulaznog niza znakova. \citep{navarro-wavelet-trees-for-all} Pseudokod algoritma za izgradnju stabla valića prikazan je u nastavku. Algoritam kreće od korijena stabla i rekurzivno se spušta do listova.
+
+\begin{algorithm}[H]
+ \caption{Izgradnja stabla valića}
+ \Fn{\texttt{izgradiStabloValića($\mathnormal{S}$, $\Sigma$)}}{
+ 	\Ako{$|\Sigma|\leqslant2$}{
+		\Vrati\;
+ 	} 
+ 	$\Sigma_1$, $\Sigma_2 \leftarrow$  podijeliNaDvaJednakaDijela($\Sigma$)\;
+ 	pridijeli svim znakovima $s_i \in \mathnormal{S}$ kod $0$ \textbf{ako} $s_i \in \Sigma_1$, \textbf{inače} kod $1$\;
+ 	$\mathnormal{S}_1$, $\mathnormal{S}_2 \leftarrow$  grupiraj znakove iz $\mathnormal{S}$ prema kodu\;
+	izgradiStabloValica($\mathnormal{S}_1$, $\Sigma_1$)\;
+	izgradiStabloValica($\mathnormal{S}_2$, $\Sigma_2$)\;
+ }
+\end{algorithm}
+
+U nastavku slijedi opis izgradnje stabla za primjer sa slike \ref{fig:wavelet-tree-example}.
+Na samom početku, ulazni niz znakova je $ \mathnormal{S} = Bioinformatika\ je\ divan\  kolegij $. Abeceda niza $\mathnormal{S}$ je
+ $$ \Sigma = \{\ ,B,a,d,e,f,g,i,j,k,l,m,n,o,r,t,v\} $$. 
+ Pritom je duljina ulaznog niza znakova $ |\mathnormal{S}| =  31 $ znak, a veličina abecede $ |\Sigma| = 17 $ znakova. Znakovi abecede su poredani uzlazno prema ASCII kodu. 
+
+Zatim se abeceda $\Sigma$ dijeli na dva približno jednaka dijela $ \Sigma_1 = \{ ,B,a,d,e,f,g,i\} $ i $ \Sigma_2 = \{j,k,l,m,n,o,r,t,v\} $. Sljedeći je korak kodirati ulazni niz znakova $\mathnormal{S}$ na način da se svakom znaku ulaznog niza $s_i$ pridijeli kod $0$ ako je $ s_i \in \Sigma_1$, te kod $1$ ako je $ s_i \in \Sigma_2 $. Rezultat ove operacije je sljedeći binarni niz $ 0010101110101001000010101110001 $. 
+
+Na osnovi dobivenog binarnog niza stvaraju se nizovi znakova $\mathnormal{S}_1$ i $\mathnormal{S}_2$ tako da se znakovi kodirani kodom $0$ izdvoje u niz $\mathnormal{S}_1$, a znakovi kodirani kodom $1$ u niz $\mathnormal{S}_2$. Na ovom su primjeru na taj način dobiveni sljedeći nizovi $\mathnormal{S}_1 = Biifaia\ e\ dia\ egi$ te $\mathnormal{S}_2 = onormtkjvnkolj$. S tim se nizovima, zajedno s odgovarajućim abecedama $\Sigma_1$ i $\Sigma_2$, postupak ponavlja za lijevo i desno dijete u stablu.
+
+Poseban je slučaj kada postupak dolazi do lista i ne stvara novo dijete u stablu, a to se događa kada je $|\Sigma| <= 2$. Razlog zbog kojeg nije potrebno stvarati nove čvorove u stablu u tom slučaju je zbog toga što se svaki znak ulaznog niza može jedinstveno kodirati samo s oznakama $0$ i $1$. Jedan od čvorova u stablu iz primjera sa slike \ref{fig:wavelet-tree-example} kod kojeg će se dogoditi taj poseban slučaj je čvor čiji je ulazni niz $\mathnormal{S} = aada$ te abeceda $ \Sigma = \{a,d\} $. Za promatrani čvor podijeli se abeceda na dva jednaka dijela i dobije $ \Sigma_1 = \{a\} $ i $ \Sigma_2 = \{d\} $ te se jednostavno čvoru pridružuje kodirani zapis $ \mathnormal{S}_{kod} = 0010 $ i ne generiraju djeca trenutnog čvora.
+
+\section{Operacije nad stablom}
+\label{sec:operacije-nad-stablom}
+
+Stablo valića omogućava efikasno izvođenje tri osnovne operacije:
+
+\begin{enumerate}
+	\item $rank(i, c)$ - broj pojavljivanja znaka $c$ do uključivo $i$-te pozicije u ulaznom nizu znakova
+	\item $select(i, c)$ - indeks $i$-tog znaka \textit{c} u ulaznom nizu znakova
+	\item $access(i)$ - znak na $i$-toj poziciji u ulaznom nizu znakova
+\end{enumerate}
+
+
+U idućim poglavljima dani su opisi 
+
 
 \chapter{Rezultati}
 
@@ -242,7 +295,7 @@ Jedan od mogućih razloga manje memorijske potrošnje jest ograničavanje velič
 
 Još jedna stvar koja bi mogla ubrzati izgradnju te smanjiti potrošnju memorije bila bi dijeljena lookup tablica RRR strukture unutar stabla valića. Ta optimizacija zahtjevala bi veće promjene na trenutnoj implmenetaciji pa zato i nije implementirana. 
 
- 
+ %
 
 \bibliography{literature}
 \bibliographystyle{fer}
