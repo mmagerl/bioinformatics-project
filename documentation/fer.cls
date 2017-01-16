@@ -62,7 +62,7 @@
 
 \LoadClass[12pt, onecolumn]{report}
 
-\RequirePackage[a4paper, left=3.5cm, right=3cm, bottom=3cm, top=3cm]{geometry}
+\RequirePackage[a4paper, left=2.5cm, right=2cm, bottom=3cm, top=3cm]{geometry}
 
 % Postavljanje encodinga
 \if@encutf \RequirePackage[utf8]{inputenc}
@@ -274,7 +274,7 @@
 			  {\large\sffamily ZAVR\v{S}NI RAD br.~\@thesisnumber \par}%
 			\else \if@raddiplomski%
 			  {\large\sffamily DIPLOMSKI RAD br.~\@thesisnumber \par}%
-			\else {\large\sffamily\bfseries BIOINFORMATIKA - PROJEKT \par}%
+			\else {\large\sffamily\bfseries SEMINAR \par}%
 			\fi\fi
 			\if@radseminar \vskip 3em%
 			\else \vskip 1em%
