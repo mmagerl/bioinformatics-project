@@ -7,7 +7,7 @@
 
 using namespace std;
 
-WaveletTreeNode::WaveletTreeNode(WaveletTreeNode* _parent, string arr, map<char, int> _sigma, map<char, WaveletTreeNode*>& charToNode): parent(_parent), sigma(_sigma) {
+WaveletTreeNode::WaveletTreeNode(WaveletTreeNode* _parent, string& arr, map<char, int> _sigma, map<char, WaveletTreeNode*>& charToNode): parent(_parent), sigma(_sigma) {
   string lArr = "";
   string rArr = "";
   vector<bool> bits;

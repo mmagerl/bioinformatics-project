@@ -18,7 +18,7 @@ class WaveletTreeNode {
 	    WaveletTreeNode* left;
 	    WaveletTreeNode* right;
 
-	    WaveletTreeNode(WaveletTreeNode* _parent, string arr, map<char, int> _sigma, map<char, WaveletTreeNode*>& charToNode);
+	    WaveletTreeNode(WaveletTreeNode* _parent, string& arr, map<char, int> _sigma, map<char, WaveletTreeNode*>& charToNode);
       bool hasChar(char c);
 	    bool isRight(char c);
 	    char getCharacterInSigma(int pos);
