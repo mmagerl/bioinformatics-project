@@ -99,6 +99,7 @@ U sljedećim odlomcima bit će opisane implementacije operacija $rank$, $select$
 
 
 \subsection{Rank}
+\label{subsec:rank}
 U RRR strukturi postoje dvije rank operacije - $rank_0(i)$ te $rank_1(i)$. Operacija $rank_0(i)$ vraća broj nula do, uključivo, indeksa $i$, a $rank_1(i)$ broj jedinica do indeksa. 
 Jedna metoda može se vrlo jednostavno izraziti pomoću druge. Tako implementacija metode $rank_0(i)$ izgleda ovako:
 
@@ -145,6 +146,7 @@ Tražimo na primjeru slike \ref{fig:rrr} $rank_1(25)$. Ulazni niz, blokovi i sup
 
 
 \subsection{Select}
+\label{subsec:select}
 Kao i za rank operaciju i select operacija ima svoje dvije varijante - $select_0(i)$ te $select_1(i)$ koje vraćaju indeks $i$-tog pojavljivanja nule odnosno jedinice. Te dvije metode mogu se napisati općenito, jednom funkcijom koja kao parametar prima boolean parametar koji određure traži zove li se $select_0$ ili $select_1$.
 Operacija $select_1(i)$ računa se na sljedeći način:
 \begin{enumerate}
@@ -182,6 +184,7 @@ Složenost možemo rastaviti na nekoliko dijelova. Vremenska složenost traženj
 Tražimo na primjeru slike \ref{fig:rrr} $select_1(12)$. Primjetimo da bi rezultat trebao biti $25$ jer je $rank_1(25)=12$. Ulazni niz, blokovi i superblokovi su 0-indeksirani. Parametri RRR-a su $b=5$ i $f=2$. U prvom koraku binarno pretražujemo superblok u kojem se nalazi dvanaesta jedinica. Dobivamo $indexSuperbloka=2$. U varijablu $broja\check{c}$ spremamo kumulativnu sumu do superbloka s indeksom $1$ - $broja\check{c}=8$. Varijabla $indexBloka=2 \cdot 2=4$. U \textit{dok} petlji se brojač poveća na vrijednost $11$, zatim na vrijednost $13$. Uz brojač, varijabla $indexBloka$ se poveća najprije na $5$ pa na $6$. Na izlasku iz petlje, $indexBloka$ i $broja\check{c}$ se pomiću ulijevo. Sada je $indexBloka=5$, a $broja\check{c}=11$. Metoda $pronađiIndeksUBloku(12-11)$ radi binarno pretraživanje nad lookup tablicom i vraća vijednost $indexUBloku=0$. Konačno, funkcija vraća vijednost $5 \cdot 5 + 0=25$.
 
 \subsection{Access}
+\label{subsec:access}
 Metoda $access(i)$ vraća koji se znak nalazi na danoj poziciji - nula ili jedan. Metoda je vrlo jednostavna. Jednostavno se računa razlika između $rank1$ od trenutne pozicije i prethodne pozicije.
 
 \begin{algorithm}[H]
@@ -256,17 +259,19 @@ Stablo valića omogućava efikasno izvođenje tri osnovne operacije:
 
 \begin{enumerate}
 	\item $rank(i, c)$ - broj pojavljivanja znaka $c$ do uključivo $i$-te pozicije u ulaznom nizu znakova
-	\item $select(i, c)$ - indeks $i$-tog znaka \textit{c} u ulaznom nizu znakova
+	\item $select(i, c)$ - indeks $i$-tog znaka $c$ u ulaznom nizu znakova
 	\item $access(i)$ - znak na $i$-toj poziciji u ulaznom nizu znakova
 \end{enumerate}
 
 
-U idućim poglavljima dani su opisi svake od navedenih operacija, njihov pseudokod te je pokazan primjer njihovog izvođenja nad stablom izgrađenim u poglavlju \ref{sec:izgradnja-stabla}.
+U idućim poglavljima dani su opisi svake od navedenih operacija, njihov pseudokod te je pokazan primjer njihovog izvođenja nad stablom izgrađenim u poglavlju \ref{sec:izgradnja-stabla}. Važno je napomenuti nekoliko implementacijskih detalja iz kojih slijede pseudokodovi u narednim poglavljima. Svaki je čvor u grafu definiran strukturom koja u sebi sadrži reference na djecu kojima se u nastavku pristupa sintaksom \texttt{čvor.lijevo} i \texttt{čvor.desno} te referencu na čvor roditelj kojem se pristupa s \texttt{čvor.roditelj}. Svi indeksi počinju od nule.
 
 \subsection{Rank}
+Pseudokod operacije $rank(i, c)$ dan je u nastavku u algoritmu \ref{alg:wt-rank}. To je operacija nad izgrađenim stablom valića koja odgovara na pitanje koliko je pojavljivanja znaka $c$ do $i$-te pozicije u ulaznom nizu znakova. Operacije \texttt{rank1} i \texttt{rank0} koje se pojavljuju u pseudokodu su operacije nad binarnim vektorom kodova i odgovaraju operacijama definiranim u poglavlju \ref{subsec:rank}.
 
 \begin{algorithm}[H]
  \caption{Pseudokod $rank$ operacije nad stablom valića}
+ \label{alg:wt-rank}
  \Fn{\texttt{rank($i$, $c$)}}{
   	\texttt{trenutniČvor = korijenStabla\;
 	pozicija = i\;
@@ -292,9 +297,11 @@ U idućim poglavljima dani su opisi svake od navedenih operacija, njihov pseudok
 \end{algorithm}
 
 \subsection{Select}
+Pseudokod operacije $select(i, c)$ prikazan je u nastavku algoritmom \ref{alg:wt-select}. To je operacija nad izgrađenim stablom valića koja odgovara na pitanje koji je indeks $i$-tog znaka $c$ u ulaznom nizu znakova. U pseudokodu se pojavljuju operacije označene kao \texttt{select0} i \texttt{select1}, a radi se o operacijama nad binarnim vektorom kodova i odgovaraju operacijama koje su prethodno definirane u poglavlju \ref{subsec:select}.
 
 \begin{algorithm}[H]
  \caption{Pseudokod $select$ operacije nad stablom valića}
+ \label{alg:wt-select}
  \Fn{\texttt{select($i$, $c$)}}{
 	\texttt{trenutniČvor = čvorZaZnak($c$)\;
 	pozicija = $i$\;
@@ -322,9 +329,11 @@ U idućim poglavljima dani su opisi svake od navedenih operacija, njihov pseudok
 
 
 \subsection{Access}
+Pseudokod operacije $access(i)$ prikazan je algoritmom \ref{alg:wt-access}. To je operacija nad izgrađenim stablom valića koja odgovara na pitanje koji je znak na $i$-toj poziciji u ulaznom nizu znakova. U samom algoritmu koriste se funkcije \texttt{access} te \texttt{rank0} i \texttt{rank1}, a odnose se na funkcije prethodno definirane u poglavljima \ref{subsec:access} i \ref{subsec:rank}.
 
 \begin{algorithm}[H]
  \caption{Pseudokod $access$ operacije nad stablom valića}
+ \label{alg:wt-access}
  \Fn{\texttt{access($i$)}}{
 	\texttt{trenutniČvor = korijenStabla\;
 	pozicija = $i$\;
