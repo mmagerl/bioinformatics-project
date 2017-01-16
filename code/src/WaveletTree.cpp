@@ -8,16 +8,13 @@
 using namespace std;
 
 WaveletTreeNode::WaveletTreeNode(WaveletTreeNode* _parent, const string& arr, map<char, int> _sigma, map<char, WaveletTreeNode*>& charToNode): parent(_parent), sigma(_sigma) {
-  string lArr = "";
-  string rArr = "";
   vector<bool> bits;
+  string nArr = "";
   for (auto x : arr) {
     auto isRightChild = isRight(x);
     bits.push_back(isRightChild);
-    if (isRightChild) {
-      rArr += x;
-    } else {
-      lArr += x;
+    if (!isRightChild) {
+      nArr += x;
     }
   }
   rrr = new RRR(bits);
@@ -38,9 +35,15 @@ WaveletTreeNode::WaveletTreeNode(WaveletTreeNode* _parent, const string& arr, ma
       }
     }
 
-    left = new WaveletTreeNode(this, lArr, lSigma, charToNode);
+    left = new WaveletTreeNode(this, nArr, lSigma, charToNode);
     if (rSigma.size() > 0) {
-      right = new WaveletTreeNode(this, rArr, rSigma, charToNode);
+      nArr = "";
+      for (auto x : arr) {
+        if (isRight(x)) {
+          nArr += x;
+        }
+      }
+      right = new WaveletTreeNode(this, nArr, rSigma, charToNode);
     }
   }
 }
