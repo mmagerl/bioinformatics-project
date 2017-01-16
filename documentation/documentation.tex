@@ -296,6 +296,8 @@ Pseudokod operacije $rank(i, c)$ dan je u nastavku u algoritmu \ref{alg:wt-rank}
 }
 \end{algorithm}
 
+Izračun operacija $rank$ započinje od korijena stabla i prolazi stablom, u najgorem slučaju, do jednog od listova. U svakoj iteraciji algoritam se spušta jednu razinu niže u stablu. Ukoliko se traženi znak $c$ nalazi u desnom podstablu (odnosno, znak $c$ je zakodiran jedinicom), pozicija se ažurira tako da joj se oduzme broj jedinica do pozicije $i$ (što je ekvivalentno operaciji \texttt{rank1(i)}) i pretraga se nastavlja u desnom podstablu trenutnog čvora. Analogno tome, ako se traženi znak $c$ nalazi u lijevom podstablu (odnosno, zakodiran je znakom nula), poziciji se oduzima vrijednost \texttt{rank0(i)} i pretraga se nastavlja u lijevom podstablu trenutnog čvora. Ako se za ulazni niz izgradi stablo valića uz primjenu RRR strukture za pohranu binarnih vektora, složenost \texttt{rank} operacije jednaka je $O(log(|\Sigma|))$ zbog toga što se u najgorem slučaju po stablu prođe po dubini do lista, dok je složenost operacije \texttt{rank} nad binarnim nizom konstantna zbog korištenja RRR strukture.
+
 \subsection{Select}
 Pseudokod operacije $select(i, c)$ prikazan je u nastavku algoritmom \ref{alg:wt-select}. To je operacija nad izgrađenim stablom valića koja odgovara na pitanje koji je indeks $i$-tog znaka $c$ u ulaznom nizu znakova. U pseudokodu se pojavljuju operacije označene kao \texttt{select0} i \texttt{select1}, a radi se o operacijama nad binarnim vektorom kodova i odgovaraju operacijama koje su prethodno definirane u poglavlju \ref{subsec:select}.
 
@@ -327,6 +329,7 @@ Pseudokod operacije $select(i, c)$ prikazan je u nastavku algoritmom \ref{alg:wt
 }
 \end{algorithm}
 
+Operacija \texttt{select} kreće od lista stabla i penje se preko roditelja svakog čvora do korijena stabla. U svakoj iteraciji promijeni se jedna dubina u stablu na više te ažurira trenutna pozicija. Ako je trenutni promatrani čvor lijevo dijete, tada se kao pozicija uzima \texttt{select0} nad čvorom roditeljem, dok se u suprotnom uzima \texttt{select1}. Vremenska složenost \texttt{select} upita nad izgrađenim stablom valića iznosi $O(log(|\Sigma|))$ ukoliko se za pohranu binarnih kodova koristi RRR struktura te se naredbe \texttt{select0} i \texttt{select1} izvode u konstatnom vremenu. Tome je tako jer se, kao i kod operacije \texttt{rank}, u najgorem slučaju mora proći kroz stablo po dubini. 
 
 \subsection{Access}
 Pseudokod operacije $access(i)$ prikazan je algoritmom \ref{alg:wt-access}. To je operacija nad izgrađenim stablom valića koja odgovara na pitanje koji je znak na $i$-toj poziciji u ulaznom nizu znakova. U samom algoritmu koriste se funkcije \texttt{access} te \texttt{rank0} i \texttt{rank1}, a odnose se na funkcije prethodno definirane u poglavljima \ref{subsec:access} i \ref{subsec:rank}.
@@ -361,6 +364,7 @@ Pseudokod operacije $access(i)$ prikazan je algoritmom \ref{alg:wt-access}. To j
 }
 \end{algorithm}
 
+Operacija \texttt{access} kreće od korijena stabla i spušta se do njegovih listova. U ovisnosti o vrijednosti \texttt{access(i)} nad trenutnom pozicijom pretraga se nastavlja u lijevom, odnosno desnom djetetu trenutnog čvora. U konačnici, kada se dosegne list stabla, ukoliko je on desno dijete vraća se zadnji znak abecede toga čvora, a u suprotnom prvi znak abecede. Vremenska složenost \texttt{access} operacije iznosi $O(log(|\Sigma|))$, te poput operacija \texttt{rank} i \texttt{select}, to vrijedi ukoliko se za pohranu binarnih vektora koristi RRR struktura jer su tada operacije nad binarnim vektorom konstantne. 
 
 \chapter{Rezultati}
 \label{sec:results}
