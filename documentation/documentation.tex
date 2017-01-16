@@ -205,12 +205,23 @@ Tražimo na primjeru slike \ref{fig:rrr} $access_1(25)$. Ulazni niz, blokovi i s
 \chapter{Rezultati}
 
 \begin{table}[h]
+\caption{Vrijeme izgradnje stabla i izvršavanja upita - FASTA datoteke}
 \centering
   \begin{tabular}{c|c|c|c|c|c|c|c|c|c|c}
     \specialcell{skup\\podataka} & $n$ & $|\Sigma|$ & \multicolumn{2}{c|}{$tc$ $(s)$} &
     \multicolumn{2}{c|}{$rank$ $(\mu s)$} & \multicolumn{2}{c|}{$select$ $(\mu s)$} & \multicolumn{2}{c}{$access$ $(\mu s)$}\\ \hline
     Human21 & \num{33543332} & \num{5} & \num{33} & \num{532} & \num{1.5} & \num{1.9} & \num{3.6} & \num{15.8} & \num{1.6} & \num{4.6} \\
-    Human21 & \num{33543332} & \num{5} & \num{33} & \num{0.001} & \num{1.5} & \num{1.9} & \num{3.6} & \num{15.8} & \num{1.6} & \num{4.6} \\
+  \end{tabular}
+\end{table}
+
+\begin{table}[h]
+\caption{Potrošnja memorije pri izgradnji stabla - FASTA datoteke}
+\centering
+  \begin{tabular}{c|c|c|c|c|c|c|c}
+    \specialcell{skup\\podataka} & $n$ & $|\Sigma|$ &
+    \multicolumn{2}{c|}{Cijeli proces $(MB)$} & \multicolumn{2}{c}{Stablo valića $(MB)$} \\ \hline
+    Human21 & \num{33543332} & \num{5} & \num{50.38} & \num{99.05} & \num{131.57} & \num{238.55} \\
+    Human21 & \num{33543332} & \num{5} & \num{50.38} & \num{99.05} & \num{131.57} & \num{238.55} \\
   \end{tabular}
 \end{table}
 
