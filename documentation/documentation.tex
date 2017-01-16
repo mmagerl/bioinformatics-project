@@ -256,6 +256,83 @@ U idućim poglavljima dani su opisi
 
 
 \chapter{Rezultati}
+\label{sec:results}
+
+\begin{table}[h]
+\caption{Vrijeme izgradnje stabla i izvršavanja upita - sintetičke datoteke}
+\centering
+  \begin{tabular}{c|c|c|c|c|c|c|c|c|c}
+    $n$ & $|\Sigma|$ & \multicolumn{2}{c|}{$tc$ $(s)$} &
+    \multicolumn{2}{c|}{$rank$ $(\mu s)$} & \multicolumn{2}{c|}{$select$ $(\mu s)$} & \multicolumn{2}{c}{$access$ $(\mu s)$}\\ \hline
+    \multirow{3}{*}{$10^2$}
+      & \num{4} & \num{0.000} & \num{0.000} & \num{0.6} & \num{0.4} & \num{0.7} & \num{1.1} & \num{0.3} & \num{1.0} \\
+      & \num{16} & \num{0.000} & \num{0.000} & \num{1.0} & \num{0.6} & \num{1.4} & \num{2.1} & \num{0.7} & \num{1.8} \\
+      & \num{28} & \num{0.001} & \num{0.000} & \num{1.3} & \num{0.7} & \num{1.8} & \num{2.5} & \num{0.9} & \num{2.1} \\
+    \hline
+    \multirow{3}{*}{$10^3$}
+      & \num{4} & \num{0.001} & \num{0.001} & \num{0.5} & \num{0.5} & \num{0.9} & \num{1.4} & \num{0.4} & \num{1.4} \\
+      & \num{16} & \num{0.002} & \num{0.002} & \num{1.1} & \num{1.0} & \num{1.6} & \num{2.6} & \num{0.9} & \num{2.6} \\
+      & \num{28} & \num{0.003} & \num{0.002} & \num{1.4} & \num{1.1} & \num{2.1} & \num{3.1} & \num{1.1} & \num{3.0} \\
+    \hline
+    \multirow{3}{*}{$10^4$}
+      & \num{4} & \num{0.008} & \num{0.012} & \num{0.5} & \num{0.7} & \num{1.1} & \num{1.7} & \num{0.5} & \num{1.9} \\
+      & \num{16} & \num{0.024} & \num{0.032} & \num{1.2} & \num{1.3} & \num{2.0} & \num{3.3} & \num{1.0} & \num{3.5} \\
+      & \num{28} & \num{0.023} & \num{0.030} & \num{1.4} & \num{1.5} & \num{2.4} & \num{3.9} & \num{1.2} & \num{4.2} \\
+    \hline
+    \multirow{3}{*}{$10^5$}
+      & \num{4} & \num{0.076} & \num{0.312} & \num{0.6} & \num{0.8} & \num{1.2} & \num{2.0} & \num{0.5} & \num{2.3} \\
+      & \num{16} & \num{0.173} & \num{0.702} & \num{1.2} & \num{1.5} & \num{2.3} & \num{3.9} & \num{1.2} & \num{4.4} \\
+      & \num{28} & \num{0.224} & \num{0.759} & \num{1.6} & \num{1.8} & \num{2.9} & \num{4.6} & \num{1.4} & \num{5.1} \\
+    \hline
+    \multirow{3}{*}{$10^6$}
+      & \num{4} & \num{0.743} & \num{4.705} & \num{0.6} & \num{1.0} & \num{1.3} & \num{2.4} & \num{0.6} & \num{2.7} \\
+      & \num{16} & \num{1.718} & \num{9.843} & \num{1.4} & \num{1.8} & \num{2.6} & \num{4.6} & \num{1.4} & \num{5.2} \\
+      & \num{28} & \num{2.284} & \num{11.539} & \num{1.7} & \num{2.2} & \num{3.5} & \num{5.6} & \num{1.8} & \num{6.2} \\
+    \hline
+    \multirow{3}{*}{$10^7$}
+      & \num{4} & \num{7.391} & \num{131.879} & \num{0.8} & \num{1.2} & \num{1.7} & \num{2.9} & \num{0.9} & \num{3.4} \\
+      & \num{16} & \num{18.045} & \num{286.005} & \num{1.9} & \num{2.6} & \num{3.8} & \num{6.0} & \num{2.2} & \num{6.7} \\
+      & \num{28} & \num{22.087} & \num{327.876} & \num{2.5} & \num{3.2} & \num{4.5} & \num{7.1} & \num{2.6} & \num{7.9} \\
+  \end{tabular}
+\end{table}
+
+\begin{table}[h]
+\caption{Potrošnja memorije pri izgradnji stabla - sintetičke datoteke}
+\centering
+  \begin{tabular}{c|c|c|c|c|c}
+    $n$ & $|\Sigma|$ &
+    \multicolumn{2}{c|}{Proces $(MB)$} & \multicolumn{2}{c}{Struktura $(MB)$} \\ \hline
+    \multirow{3}{*}{$10^2$}
+      & \num{4} \\
+      & \num{16} \\
+      & \num{28} \\
+    \hline
+    \multirow{3}{*}{$10^3$}
+      & \num{4} \\
+      & \num{16} \\
+      & \num{28} \\
+    \hline
+    \multirow{3}{*}{$10^4$}
+      & \num{4} \\
+      & \num{16} \\
+      & \num{28} \\
+    \hline
+    \multirow{3}{*}{$10^5$}
+      & \num{4} \\
+      & \num{16} \\
+      & \num{28} \\
+    \hline
+    \multirow{3}{*}{$10^6$}
+      & \num{4} \\
+      & \num{16} \\
+      & \num{28} \\
+    \hline
+    \multirow{3}{*}{$10^7$}
+      & \num{4} \\
+      & \num{16} \\
+      & \num{28} \\
+  \end{tabular}
+\end{table}
 
 \begin{table}[h]
 \caption{Vrijeme izgradnje stabla i izvršavanja upita - FASTA datoteke}
@@ -263,7 +340,14 @@ U idućim poglavljima dani su opisi
   \begin{tabular}{c|c|c|c|c|c|c|c|c|c|c}
     \specialcell{skup\\podataka} & $n$ & $|\Sigma|$ & \multicolumn{2}{c|}{$tc$ $(s)$} &
     \multicolumn{2}{c|}{$rank$ $(\mu s)$} & \multicolumn{2}{c|}{$select$ $(\mu s)$} & \multicolumn{2}{c}{$access$ $(\mu s)$}\\ \hline
+    HPV & \\
+    HIV & \\
+    Camelpox & \\
+    Tuberculosis & \\
+    Salmonella & \\
+    Coli & \\
     Human21 & \num{33543332} & \num{5} & \num{33} & \num{532} & \num{1.5} & \num{1.9} & \num{3.6} & \num{15.8} & \num{1.6} & \num{4.6} \\
+    Human3 & \\
   \end{tabular}
 \end{table}
 
@@ -280,7 +364,7 @@ U idućim poglavljima dani su opisi
     Salmonella & \num{0} & \num{0} & \num{26.34} & \num{46.38} & \num{11.14} & \num{9.11} \\
     Coli & \num{0} & \num{0} & \num{25.84} & \num{41.52} & \num{14.19} & \num{12.59} \\
     Human21 & \num{33543332} & \num{5} & \num{131.57} & \num{238.55} & \num{50.38} & \num{99.05} \\
-    Human3 & \num{} & \num{} & \num{} & \num{} & \num{} & \num{} \\
+    Human3 & \num{} & \num{} & \num{782.22} & \num{} & \num{190.16} & \num{} \\
   \end{tabular}
 \end{table}
 
