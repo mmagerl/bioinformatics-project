@@ -311,34 +311,34 @@ U idućim poglavljima dani su opisi
     $n$ & $|\Sigma|$ &
     \multicolumn{2}{c|}{Proces $(MB)$} & \multicolumn{2}{c}{Struktura $(MB)$} \\ \hline
     \multirow{3}{*}{$10^2$}
-      & \num{4} \\
-      & \num{16} \\
-      & \num{28} \\
+      & \num{4} & \num{} & \num{} & \num{} & \num{} \\
+      & \num{16} & \num{} & \num{} & \num{} & \num{} \\
+      & \num{28} & \num{} & \num{} & \num{} & \num{} \\
     \hline
     \multirow{3}{*}{$10^3$}
-      & \num{4} \\
-      & \num{16} \\
-      & \num{28} \\
+      & \num{4} & \num{} & \num{} & \num{} & \num{} \\
+      & \num{16} & \num{} & \num{} & \num{} & \num{} \\
+      & \num{28} & \num{} & \num{} & \num{} & \num{} \\
     \hline
     \multirow{3}{*}{$10^4$}
-      & \num{4} \\
-      & \num{16} \\
-      & \num{28} \\
+      & \num{4} & \num{} & \num{} & \num{} & \num{} \\
+      & \num{16} & \num{} & \num{} & \num{} & \num{} \\
+      & \num{28} & \num{} & \num{} & \num{} & \num{} \\
     \hline
     \multirow{3}{*}{$10^5$}
-      & \num{4} \\
-      & \num{16} \\
-      & \num{28} \\
+      & \num{4} & \num{} & \num{} & \num{} & \num{} \\
+      & \num{16} & \num{} & \num{} & \num{} & \num{} \\
+      & \num{28} & \num{} & \num{} & \num{} & \num{} \\
     \hline
     \multirow{3}{*}{$10^6$}
-      & \num{4} \\
-      & \num{16} \\
-      & \num{28} \\
+      & \num{4} & \num{} & \num{} & \num{} & \num{} \\
+      & \num{16} & \num{} & \num{} & \num{} & \num{} \\
+      & \num{28} & \num{} & \num{} & \num{} & \num{} \\
     \hline
     \multirow{3}{*}{$10^7$}
-      & \num{4} \\
-      & \num{16} \\
-      & \num{28} \\
+      & \num{4} & \num{} & \num{} & \num{} & \num{} \\
+      & \num{16} & \num{} & \num{} & \num{} & \num{} \\
+      & \num{28} & \num{} & \num{} & \num{} & \num{} \\
   \end{tabular}
 \end{table}
 
@@ -348,14 +348,14 @@ U idućim poglavljima dani su opisi
   \begin{tabular}{c|c|c|c|c|c|c|c|c|c|c}
     \specialcell{skup\\podataka} & $n$ & $|\Sigma|$ & \multicolumn{2}{c|}{$tc$ $(s)$} &
     \multicolumn{2}{c|}{$rank$ $(\mu s)$} & \multicolumn{2}{c|}{$select$ $(\mu s)$} & \multicolumn{2}{c}{$access$ $(\mu s)$}\\ \hline
-    HPV & \\
-    HIV & \\
-    Camelpox & \\
-    Tuberculosis & \\
-    Salmonella & \\
-    Coli & \\
+    HPV & \num{7313} & \num{4} & \num{0.006} & \num{0.009} & \num{0.6} & \num{0.7} & \num{1.0} & \num{1.7} & \num{0.5} & \num{1.8} \\
+    HIV & \num{9181} & \num{4} & \num{0.007} & \num{0.010} & \num{0.5} & \num{0.7} & \num{1.0} & \num{1.7} & \num{0.5} & \num{1.9} \\
+    Camelpox & \num{205719} & \num{4} & \num{0.152} & \num{0.598} & \num{0.5} & \num{0.8} & \num{1.2} & \num{2.1} & \num{0.6} & \num{2.4} \\
+    Tuberculosis & \num{4411532} & \num{4} & \num{3.253} & \num{56.304} & \num{0.7} & \num{1.1} & \num{1.5} & \num{3.0} & \num{0.9} & \num{3.1} \\
+    Salmonella & \num{4791961} & \num{9} & \num{7.394} & \num{50.783} & \num{1.2} & \num{1.6} & \num{2.1} & \num{141.6} & \num{1.9} & \num{5.7} \\
+    Coli & \num{5231428} & \num{12} & \num{7.775} & \num{55.846} & \num{1.4} & \num{1.9} & \num{2.6} & \num{8.2} & \num{1.7} & \num{5.7} \\
     Human21 & \num{33543332} & \num{5} & \num{33} & \num{532} & \num{1.5} & \num{1.9} & \num{3.6} & \num{15.8} & \num{1.6} & \num{4.6} \\
-    Human3 & \\
+    Human3 & \num{198295559} & \num{9} & \num{263.215} & - & \num{1.7} & - & \num{3.0} & - & \num{2.1} & - \\
   \end{tabular}
 \end{table}
 
@@ -365,14 +365,14 @@ U idućim poglavljima dani su opisi
   \begin{tabular}{c|c|c|c|c|c|c}
     \specialcell{skup\\podataka} & $n$ & $|\Sigma|$ &
     \multicolumn{2}{c|}{Proces $(MB)$} & \multicolumn{2}{c}{Struktura $(MB)$} \\ \hline
-    HPV & \num{0} & \num{0} & \num{1.61} & \num{1.65} & \num{0.2} & \num{0.2} \\
-    HIV & \num{0} & \num{0} & \num{1.63} & \num{1.66} & \num{0.2} & \num{0.2} \\
-    Camelpox & \num{0} & \num{0} & \num{2.13} & \num{2.54} & \num{0.3} & \num{0.41} \\
-    Tuberculosis & \num{0} & \num{0} & \num{14.82} & \num{25.56} & \num{6.78} & \num{7.56} \\
-    Salmonella & \num{0} & \num{0} & \num{26.34} & \num{46.38} & \num{11.14} & \num{9.11} \\
-    Coli & \num{0} & \num{0} & \num{25.84} & \num{41.52} & \num{14.19} & \num{12.59} \\
+    HPV & \num{7813} & \num{4} & \num{1.61} & \num{1.65} & \num{0.2} & \num{0.2} \\
+    HIV & \num{9181} & \num{4} & \num{1.63} & \num{1.66} & \num{0.2} & \num{0.2} \\
+    Camelpox & \num{205719} & \num{4} & \num{2.13} & \num{2.54} & \num{0.3} & \num{0.41} \\
+    Tuberculosis & \num{4411532} & \num{4} & \num{14.82} & \num{25.56} & \num{6.78} & \num{7.56} \\
+    Salmonella & \num{4791961} & \num{9} & \num{26.34} & \num{46.38} & \num{11.14} & \num{9.11} \\
+    Coli & \num{5231428} & \num{12} & \num{25.84} & \num{41.52} & \num{14.19} & \num{12.59} \\
     Human21 & \num{33543332} & \num{5} & \num{131.57} & \num{238.55} & \num{50.38} & \num{99.05} \\
-    Human3 & \num{} & \num{} & \num{782.22} & \num{} & \num{190.16} & \num{} \\
+    Human3 & \num{198295559} & \num{9} & \num{782.22} & - & \num{190.16} & - \\
   \end{tabular}
 \end{table}
 
