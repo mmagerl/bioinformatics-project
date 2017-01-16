@@ -98,7 +98,7 @@ int RRR::select(int i, bool type) {
   return indBlock*b + indInBlock;
 }
 
-void RRR::construct(vector<bool> bits, int _b, int _f) {
+void RRR::construct(const vector<bool>& bits, int _b, int _f) {
   b = _b;
   f = _f;
 
@@ -150,14 +150,14 @@ void RRR::construct(vector<bool> bits, int _b, int _f) {
 }
 
 // time-complexity - O(b*2^b) for preprocessing
-RRR::RRR(vector<bool> bits) {
+RRR::RRR(const vector<bool>& bits) {
   int b = max((int)(floor(log2(bits.size())) / 2), 1);
   int f = max((int)(pow(floor(log2(bits.size())), 2) / b), 1);
   construct(bits, b, f);
 }
 
 // time-complexity - O(b*2^b) for preprocessing
-RRR::RRR(vector<bool> bits, int _b, int _f) {
+RRR::RRR(const vector<bool>& bits, int _b, int _f) {
   construct(bits, _b, _f);
 }
 
