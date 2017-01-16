@@ -116,7 +116,7 @@ Pseudokod:
  	\texttt{indexBloka = i / b\;
 	indexSuperbloka = i / (b*f)\;
 	rez = kumulativnaSumaSuperbloka(indexSuperbloka - 1)\;
-	\Za {\texttt{i = indexSuperbloka * f .. indeksBloka}}{
+	\Za {\texttt{i = indexSuperbloka * f .. indexBloka}}{
 		rez += klasa[i]\;
 	}
 	c = klasa[indexBloka]\;
@@ -128,6 +128,11 @@ Pseudokod:
 \end{algorithm}
 
 Složenost rank operacija je $O(f)$, odnosno $O(log_2n)$.
+
+\textbf{Primjer izvođenja operacije $rank_1$}:
+
+Tražimo na primjeru slike \ref{fig:rrr} $rank_1(25)$. Ulazni niz, blokovi i superblokovi su 0-indeksirani. Parametri RRR-a su $b=5$ i $f=2$. U prvom koraku računamo $indexBloka=\frac{25}{5}=5$.  U sljedećem računamo $indexSuperbloka=\frac{25}{5 \cdot 2}=2$ (ovdje koristimo cjelobrojnu aritmetiku). U variablu $rez$ dodajemo kumulativnu sumu do superbloka $1$. Ona iznosi $8$. Zatim u petlji s varijablom $i$ idemo od $indexSuperbloka \cdot f=4$ do $indexBloka=5$, isključivo. U toj petlji idemo samo s $i=4$ te u varijablu $rez$ dodajemo klasu četvrtog bloka koja iznosi $3$. Sada je vrijednost varijable $rez$ jednaka $11$. Naposlijetku čitamo klasu i indeks traženog bloka koje iznose: $c=2$, $o=9$. Dodajemo $rez+=lookup[2][9][25-5*5]$, što možemo sa slike \ref{fig:lookup} iščitati da iznosi $1$. Konačna vrijednost u operacija $rank_1$ vraća je 12. 
+
 
 \subsection{Select}
 Kao i za rank operaciju i select operacija ima svoje dvije varijante - $select_0(i)$ te $select_1(i)$ koje vraćaju indeks $i$-tog pojavljivanja nule odnosno jedinice. Te dvije metode mogu se napisati općenito, jednom funkcijom koja kao parametar prima boolean parametar koji određure traži zove li se $select_0$ ili $select_1$.
@@ -145,15 +150,15 @@ Pseudokod:
  \Fn{\texttt{select(i, tip)}}{
  	\texttt{indexSuperbloka = pronađiSuperblok(i, tip)\;
 	brojač = kumulativnaSumaSuperbloka(indexSuperbloka - 1, tip)\;
-	indeksBloka = indexSuperbloka * f\;
+	indexBloka = indexSuperbloka * f\;
 	\Dok{\texttt{brojač < i}}{
-		brojač = brojač + dohvatiKlasuBloka(indeksBloka, tip)\;
-		indeksBloka = indeksBloka + 1\;
+		brojač = brojač + dohvatiKlasuBloka(indexBloka, tip)\;
+		indexBloka = indexBloka + 1\;
 	}
-	indeksBloka = indeksBloka - 1\;
-	brojač = brojač - dohvatiKlasuBloka(indeksBloka, tip)\;
-	indeksUBloku = pronađiIndeksUBloku(i - brojač, tip)\;
- 	\Vrati indeksBloka * b + indeksUBloku\;
+	indexBloka = indexBloka - 1\;
+	brojač = brojač - dohvatiKlasuBloka(indexBloka, tip)\;
+	indexUBloku = pronađiIndeksUBloku(i - brojač, tip)\;
+ 	\Vrati indexBloka * b + indexUBloku\;
  	}
 
  }
@@ -161,6 +166,10 @@ Pseudokod:
 
 Metode \texttt{pronađiSuperblok}, \texttt{kumulativnaSumaSuperbloka}, \texttt{dohvatiKlasuBloka} i \texttt{pronađiIndeksUBloku} primaju kao parametar \texttt{tip}. Varijabla \texttt{tip} je istinita ako se traži jedinica, odnosno lažna ako se traži nula. Ovisno o tom parametru se metode i ponašaju. Metode \texttt{pronađiSuperblok} i \texttt{pronađiIndeksUBloku} rade binarno pretraživanje kako bi pronašle indekse.
 Složenost možemo rastaviti na nekoliko dijelova. Vremenska složenost traženja superbloka je $O(\frac{n}{b \dot f})$, tj. $O(\frac{n}{(\log_2n)^2})$. Zatim se traži indeks bloka unutar superbloka - $O(f)$, tj. $O(\log_2n)$. Složenost dohvaćanja klase je konstantna, $O(1)$. Složenost traženja indeksa u bloku je $O(\log_2b)$, odnosno $O(\log_2(\log_2n))$.
+
+\textbf{Primjer izvođenja operacije $select_1$}:
+
+Tražimo na primjeru slike \ref{fig:rrr} $select_1(12)$. Primjetimo da bi rezultat trebao biti $25$ jer je $rank_1(25)=12$. Ulazni niz, blokovi i superblokovi su 0-indeksirani. Parametri RRR-a su $b=5$ i $f=2$. U prvom koraku binarno pretražujemo superblok u kojem se nalazi dvanaesta jedinica. Dobivamo $indexSuperbloka=2$. U varijablu $broja\check{c}$ spremamo kumulativnu sumu do superbloka s indeksom $1$ - $broja\check{c}=8$. Varijabla $indexBloka=2 \cdot 2=4$. U \textit{dok} petlji se brojač poveća na vrijednost $11$, zatim na vrijednost $13$. Uz brojač, varijabla $indexBloka$ se poveća najprije na $5$ pa na $6$. Na izlasku iz petlje, $indexBloka$ i $broja\check{c}$ se pomiću ulijevo. Sada je $indexBloka=5$, a $broja\check{c}=11$. Metoda $pronađiIndeksUBloku(12-11)$ radi binarno pretraživanje nad lookup tablicom i vraća vijednost $indexUBloku=0$. Konačno, funkcija vraća vijednost $5 \cdot 5 + 0=25$.
 
 \subsection{Access}
 Metoda $access(i)$ vraća koji se znak nalazi na danoj poziciji - nula ili jedan. Metoda je vrlo jednostavna. Jednostavno se računa razlika između $rank1$ od trenutne pozicije i prethodne pozicije.
@@ -178,6 +187,10 @@ Metoda $access(i)$ vraća koji se znak nalazi na danoj poziciji - nula ili jedan
  }
 \end{algorithm}
 
+
+\textbf{Primjer izvođenja operacije $access$}:
+
+Tražimo na primjeru slike \ref{fig:rrr} $access_1(25)$. Ulazni niz, blokovi i superblokovi su 0-indeksirani. Parametri RRR-a su $b=5$ i $f=2$. Rezultat je $rank_1(25)-rank_1(24)$ što je jednako $1$.
 
 \chapter{Stablo valića}
 \begin{figure}[ht]
